@@ -1,0 +1,49 @@
+name: Deploy Application via Docker Compose
+
+on:
+  push:
+    branches:
+      - dev  # Trigger on push to 'main' branch or change this to your branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # Use your self-hosted runner
+
+    steps:
+      # Step 1: Checkout code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: SSH into VM and run Docker Compose commands
+      - name: SSH into VM and run Docker Compose
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # GitHub secret for the private SSH key
+          SSH_USER: ${{ secrets.SSH_USER }}  # GitHub secret for the SSH user
+          VM_INTERNAL_IP: ${{ secrets.VM_INTERNAL_IP }}  # GitHub secret for the VM's internal IP
+        run: |
+          # Set up SSH agent to use the private key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add the VM to known hosts to avoid SSH prompts
+          ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
+
+          # SSH into the VM and perform actions
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
+            # Clone the repository (if not already cloned)
+            if [ ! -d "/home/$USER/project" ]; then
+              git clone https://github.com/yourusername/yourrepo.git /home/$USER/project
+            fi
+            
+            cd /home/$USER/project
+            
+            # Pull the latest Docker images
+            docker-compose pull
+
+            # Run docker-compose up in detached mode
+            docker-compose up -d
+
+            # Optional: Run other commands or check status
+            docker ps
+          EOF
