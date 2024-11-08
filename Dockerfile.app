@@ -1,7 +1,7 @@
 ARG REGISTRY 
 ARG BASE_IMAGE 
 # Stage 1: Use pre-built base image for build environment 
-FROM $REGISTRY/$BASE_IMAGE AS builder 
+FROM https://hmis-repo.midashealthservices.com.np/php:8.1 AS builder 
  
 LABEL maintainer="Binod Adhikari" \ 
       email="binod.adhikari@midastechnologies.com"       
