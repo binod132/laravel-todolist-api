@@ -14,8 +14,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up SSH for accessing the VM
-      - name: Set up SSH
+      # Step 2: SSH into VM, perform git pull, checkout dev, and run Docker Compose
+      - name: SSH into VM, git pull, and run Docker Compose
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
           SSH_USER: ubuntu  # GitHub secret for the SSH user
@@ -29,62 +29,26 @@ jobs:
           # Add the VM to known hosts to avoid SSH prompts
           ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
 
-      # Step 3: SSH into the VM and navigate to the directory
-      - name: SSH into VM and check project directory
-        env:
-          SSH_USER: ubuntu
-          VM_INTERNAL_IP: "192.168.130.254"  # VM's internal IP
-        run: |
-          # SSH into VM and navigate to the project directory
+          # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
             # Navigate to the project directory
             cd /home/ubuntu/project/laravel-todolist-api
 
-            # List the contents of the directory to ensure we're in the right place
+            # Perform git pull to fetch the latest changes
+            git pull origin dev
+
+            # Checkout to the dev branch
+            git checkout dev
+
+            # List the contents of the directory to confirm we're in the right place
             ls -al
-          EOF
-
-      # Step 4: Pull Docker images (docker-compose pull)
-      - name: Pull Docker Images
-        env:
-          SSH_USER: ubuntu
-          VM_INTERNAL_IP: "192.168.130.254"  # VM's internal IP
-        run: |
-          # SSH into VM and pull the latest Docker images
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            # Navigate to the project directory
-            cd /home/ubuntu/project/laravel-todolist-api
 
             # Pull the latest Docker images
             docker-compose pull
-          EOF
-
-      # Step 5: Run Docker Compose up (docker-compose up -d)
-      - name: Run Docker Compose Up
-        env:
-          SSH_USER: ubuntu
-          VM_INTERNAL_IP: "192.168.130.254"  # VM's internal IP
-        run: |
-          # SSH into VM and run docker-compose up
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            # Navigate to the project directory
-            cd /home/ubuntu/project/laravel-todolist-api
 
             # Run docker-compose up in detached mode
             docker-compose up -d
-          EOF
 
-      # Step 6: Optional - Verify Docker containers are running
-      - name: Verify Docker Containers
-        env:
-          SSH_USER: ubuntu
-          VM_INTERNAL_IP: "192.168.130.254"  # VM's internal IP
-        run: |
-          # SSH into VM and check the status of the containers
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            # Navigate to the project directory
-            cd /home/ubuntu/project/laravel-todolist-api
-
-            # Check if the containers are running
+            # Optional: Verify the status of the Docker containers
             docker ps
           EOF
