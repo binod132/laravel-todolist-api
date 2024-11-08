@@ -5,7 +5,7 @@ services:
     #image: todo-app
     build:
       context: .
-      dockerfile: ./Dockerfile.app
+      dockerfile: Dockerfile.app
     user: www-todo
     container_name: todo-app
     tty: true
