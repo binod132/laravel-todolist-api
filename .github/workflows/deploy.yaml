@@ -52,7 +52,7 @@ jobs:
             docker compose pull
 
             # Run docker-compose up in detached mode
-            docker compose up -d
+            docker compose up build -d
 
             # Optional: Verify the status of the Docker containers
             docker ps
