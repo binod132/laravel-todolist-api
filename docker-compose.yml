@@ -21,7 +21,7 @@ services:
       - todo-network
 
   # Nginx Service
-  lab-webserver:
+  todo-webserver:
     image: nginx:alpine
     container_name: todo-webserver
     tty: true
@@ -36,7 +36,7 @@ services:
       - todo-network
 
   # PostgreSQL Service
-  lab-db:
+  todo-db:
     build:
       context: ./debezium-postgres
       dockerfile: Dockerfile
@@ -51,12 +51,12 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: postgresql
     volumes:
-      - labdata:/var/lib/postgresql/data
+      - tododata:/var/lib/postgresql/data
     networks:
       - todo-network
 
   # Redis Service
-  lab-redis:
+  todo-redis:
     image: redis:alpine
     container_name: todo-redis
     ports:
