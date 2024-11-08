@@ -52,6 +52,8 @@ jobs:
             docker compose pull
 
             # Run docker-compose up in detached mode
+            ls -l | grep Dockerfile.app
+            docker build -f Dockerfile.app -t todo-app .
             docker compose up --build -d
 
             # Optional: Verify the status of the Docker containers
