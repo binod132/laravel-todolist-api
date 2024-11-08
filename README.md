@@ -1,4 +1,4 @@
-# Laravel To-Do List API
+# Laravel To-Do List API.
 
 A simple To-Do list API built with Laravel.
 
