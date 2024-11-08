@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - dev  # Trigger on push to 'main' branch or change this to your branch
+      - dev  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
@@ -31,19 +31,15 @@ jobs:
 
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            # Clone the repository (if not already cloned)
-            if [ ! -d "/home/$USER/project" ]; then
-              git clone https://github.com/binod132/laravel-todolist-api.git /home/ubuntu/project
-            fi
-            
-            cd /home/ubuntu/project
-            
+            # Navigate to the project directory
+            cd /home/ubuntu/project/laravel-todolist-api
+
             # Pull the latest Docker images
             docker-compose pull
 
             # Run docker-compose up in detached mode
             docker-compose up -d
 
-            # Optional: Run other commands or check status
+            # Optional: Run other commands or check the status of the containers
             docker ps
           EOF
