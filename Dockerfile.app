@@ -57,7 +57,7 @@ COPY --chown=www-lab:www-todo . /var/www
 # Set permissions for storage directory 
 RUN chown -R www-todo:www-todo /var/www/storage 
 RUN chmod -R 775 /var/www/storage 
-RUN chown -R www-lab:www-todo /var/www/vendor
+RUN chown -R www-todo:www-todo /var/www/vendor
 RUN chmod -R 775 /var/www/vendor
 # Change current user to www 
 USER www-todo
