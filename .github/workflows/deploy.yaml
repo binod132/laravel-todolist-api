@@ -13,8 +13,12 @@ jobs:
       # Step 1: Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
+      # Step 2: Log in to Docker registry
+      - name: Docker Login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin ${{ secrets.DOCKER_REGISTRY }}
 
-      # Step 2: SSH into VM, perform git pull, checkout dev, and run Docker Compose
+      # Step 3: SSH into VM, perform git pull, checkout dev, and run Docker Compose
       - name: SSH into VM, git pull, and run Docker Compose
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
