@@ -33,10 +33,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
             # Clone the repository (if not already cloned)
             if [ ! -d "/home/$USER/project" ]; then
-              git clone https://github.com/yourusername/yourrepo.git /home/$USER/project
+              git clone https://github.com/binod132/laravel-todolist-api.git /home/ubuntu/project
             fi
             
-            cd /home/$USER/project
+            cd /home/ubuntu/project
             
             # Pull the latest Docker images
             docker-compose pull
