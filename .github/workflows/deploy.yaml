@@ -57,7 +57,7 @@ jobs:
             echo "Checking build................."
             docker build -f Dockerfile.app -t todo-app .
             echo "docker compose up ............."
-            docker compose up --build -d
+            docker compose up --build --no-cache -d
 
             # Optional: Verify the status of the Docker containers
             docker ps
