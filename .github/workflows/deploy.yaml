@@ -44,10 +44,10 @@ jobs:
             ls -al
 
             # Pull the latest Docker images
-            docker-compose pull
+            docker compose pull
 
             # Run docker-compose up in detached mode
-            docker-compose up -d
+            docker compose up -d
 
             # Optional: Verify the status of the Docker containers
             docker ps
