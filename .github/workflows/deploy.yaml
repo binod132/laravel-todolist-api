@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev  # Trigger on push to 'dev' branch or change this to your branch
-
 jobs:
   deploy:
     runs-on: self-hosted  # Use your self-hosted runner
