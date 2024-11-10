@@ -2,10 +2,12 @@
 - name: Create a new VM from template on ESXi host
   hosts: esxi_host
   gather_facts: no
+  collections:
+    - community.vmware
 
   tasks:
     - name: Clone VM from template
-      vmware_guest:
+      community.vmware.vmware_guest:
         hostname: "{{ ansible_host }}"
         username: root
         password: "{{ ansible_ssh_pass }}"
@@ -19,20 +21,11 @@
           num_cpu_cores_per_socket: 1
         networks:
           - name: "VM Network"
-            ip: "static"  # Set to static IP
-            ip_address: "192.168.130.12"  # Static IP address
+            type: static
+            ip: "192.168.130.12"  # Static IP address
             netmask: "255.255.255.0"  # Subnet mask
             gateway: "192.168.130.1"  # Gateway IP
         disk:
           - size_gb: 50
             type: thin
             datastore: "datastore1"
-
-    - name: Power on the new VM
-      vmware_vm_vm_d:
-        hostname: "{{ ansible_host }}"
-        username: root
-        password: "{{ ansible_ssh_pass }}"
-        validate_certs: no
-        name: "new-ansible-vm"
-        state: powered_on
