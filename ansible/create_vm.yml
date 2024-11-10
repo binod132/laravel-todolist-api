@@ -1,9 +1,11 @@
 ---
 - name: Create a new VM from template on ESXi host
   hosts: esxi_host
-  gather_facts: no
+  gather_facts: yes
   collections:
     - community.vmware
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Clone VM from template
