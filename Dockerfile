@@ -1,7 +1,7 @@
 ARG REGISTRY 
 ARG BASE_IMAGE 
 # Stage 1: Use pre-built base image for build environment 
-FROM hmis-repo.midashealthservices.com.np/php:8.1 AS builder 
+FROM hmis-repo.midashealthservices.com.np/php:8.2 AS builder 
  
 LABEL maintainer="Binod Adhikari" \ 
       email="binod.adhikari@midastechnologies.com"       
@@ -24,7 +24,7 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
  
 # Stage 2: Production environment 
-FROM php:8.1-fpm 
+FROM php:8.2-fpm 
  
 WORKDIR /var/www 
  
@@ -54,7 +54,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www-todo www-todo
 # COPY .env.example /var/www/.env
 COPY --chown=www-lab:www-todo . /var/www 
  
-# Set permissions for storage directory 
+# Set permissions for storage directory. 
 RUN chown -R www-todo:www-todo /var/www/storage 
 RUN chmod -R 775 /var/www/storage 
 RUN chown -R www-todo:www-todo /var/www/vendor
