@@ -16,7 +16,7 @@ RUN chmod -R 775 /var/www/storage
 RUN composer update --no-dev --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
 # Check Vendor folder
-RUN pwd && ls -al
+RUN pwd && ls -al /var/www/vendor
 # Copy the application code for building 
 COPY . /var/www 
 # Copy the entrypoint script and make it executable
