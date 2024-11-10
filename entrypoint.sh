@@ -6,12 +6,12 @@ php-fpm &
 # Wait for PHP-FPM to start
 sleep 5
 
-# Check if application key exists in .env file (to avoid unnecessary key generation)
-if ! grep -q 'APP_KEY=' /var/www/.env; then
-    echo "Generating application key..."
+# Check if APP_KEY in .env is empty or missing
+if grep -q '^APP_KEY=$' /var/www/.env; then
+    echo "APP_KEY is empty. Generating application key..."
     php artisan key:generate --force
 else
-    echo "Application key already exists."
+    echo "APP_KEY already set."
 fi
 
 # Run the artisan command to generate passport keys if they don't exist
