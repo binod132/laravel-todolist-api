@@ -14,7 +14,7 @@
         validate_certs: no
         name: "new-ansible-vm"
         template: "jump-server"
-        state: powered_on
+        state: powered-on
         hardware:
           num_cpus: 2
           memory_mb: 4096
