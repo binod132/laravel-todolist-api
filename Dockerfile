@@ -52,7 +52,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www-todo www-todo
  
 # Copy existing application directory contents 
 # COPY .env.example /var/www/.env
-COPY --chown=www-lab:www-todo . /var/www 
+COPY --chown=www-todo:www-todo . /var/www 
  
 # Set permissions for storage directory. 
 RUN chown -R www-todo:www-todo /var/www/storage 
