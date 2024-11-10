@@ -29,8 +29,9 @@ services:
       - "4444:443"     # Map Nginx HTTPS to 4444
     volumes:
       - ./:/var/www
-      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./nginx/conf/test.conf:/etc/nginx/conf.d/default.conf
+      #- ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      #- ./nginx/conf.d/:/etc/nginx/conf.d/:ro
     networks:
       - todo-network
 
