@@ -11,12 +11,12 @@ WORKDIR /var/www
 COPY composer.lock composer.json /var/www/ 
 # RUN composer install --no-dev --no-cache --no-scripts --prefer-dist --optimize-autoloader
 # RUN composer install --no-dev --no-cache && php artisan octane:start --workers=8 --task-workers=16 --host=0.0.0.0 --max-requests=500 --port=9000
-COPY --chown=www-um:www-um . /var/www
+COPY --chown=www-todo:www-todo . /var/www
 RUN chmod -R 775 /var/www/storage
 RUN composer update --no-dev --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
 # Check Vendor folder
-RUN pwd && ls -al /var/www/vendor
+RUN pwd && ls -al
 # Copy the application code for building 
 COPY . /var/www 
 # Copy the entrypoint script and make it executable
