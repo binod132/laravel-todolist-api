@@ -5,7 +5,7 @@
 
   tasks:
     - name: Clone VM from template
-      community.vmware.vmware_vm_vm_d:
+      community.vmware.vmware_vm:
         hostname: "{{ ansible_host }}"
         username: root
         password: "{{ ansible_ssh_pass }}"
