@@ -6,16 +6,21 @@ php-fpm &
 # Wait for PHP-FPM to start
 sleep 5
 
-# Check if .env file exists, create if not
-if [ ! -f /var/www/.env ]; then
-    echo "Creating .env file..."
-    cp /var/www/.env.example /var/www/.env
-
-    # Generate the Laravel application key and store it in .env
+# Check if application key exists in .env file (to avoid unnecessary key generation)
+if ! grep -q 'APP_KEY=' /var/www/.env; then
     echo "Generating application key..."
     php artisan key:generate --force
 else
-    echo ".env file already exists."
+    echo "Application key already exists."
 fi
 
-# Generate Passport
+# Run the artisan command to generate passport keys if they don't exist
+if [ ! -f /var/www/storage/oauth-private.key ]; then
+    echo "Generating Passport keys..."
+    php artisan passport:keys
+else
+    echo "Passport keys already exist."
+fi
+
+# Bring PHP-FPM to the foreground
+wait
