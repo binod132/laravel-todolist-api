@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Clone running VM (jump-server)
-      community.vmware.vmware_vm_vm:
+      community.vmware.vmware_guest_instant_clone:
         hostname: "192.168.130.210"
         username: "root"
         password: "Mid@s123"
