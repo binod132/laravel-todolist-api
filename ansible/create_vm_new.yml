@@ -3,17 +3,21 @@
   gather_facts: no
   tasks:
     - name: Clone running VM (jump-server)
-      community.vmware.vmware_vm_vm_docker:
+      community.vmware.vmware_vm_vm:
         hostname: "192.168.130.210"
         username: "root"
         password: "Mid@s123"
-        cluster: "ha-datacenter"  # specify the ESXi cluster if applicable
-        datastore: "datastore1"  # specify the correct datastore
-        folder: "/vmfs/volumes/datastore1/vm"  # specify the folder to create the VM in
-        name: "new-ansible-vm"
+        cluster: "ha-datacenter"  # Specify the ESXi cluster if applicable
+        datastore: "datastore1"  # Specify the correct datastore
+        folder: "/vmfs/volumes/datastore1/vm"  # Specify the folder to create the VM in
+        name: "new-ansible-vm"  # The name of the new VM
         state: "powered-on"
         clone:
-          template: "jump-server"  # Clone the running VM (jump-server)
+          # Specify the name of the running VM that you want to clone
+          source_vm: "jump-server"
+          # Specify whether to power off the VM during the clone operation
+          power_on: true
+          # Optional customization options
           customize: true
           customize_spec:
             hostname: "new-ansible-vm"  # Set the hostname for the new VM
