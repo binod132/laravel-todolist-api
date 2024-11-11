@@ -21,12 +21,16 @@
         template: "{{ vm_template }}"
         folder: ""
         datacenter: "ha-datacenter"
+        datastore: "datastore1"
         state: powered-on
         hardware:
           num_cpus: 2
           memory_mb: 4096
         # Remove the disk configuration and use default settings from the template
         # Remove network settings to use the default network configuration from the template
+        networks:
+          - name: "VM Network"
+            type: "network"
       register: vm_creation_result
 
     - name: Check VM creation result
