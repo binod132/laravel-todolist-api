@@ -30,7 +30,7 @@
         name: "{{ vm_name }}"
         datacenter: "{{ datacenter }}"
         folder: "{{ vm_folder }}"
-        cluster: "{{ cluster_name }}"
+        cluster: ""
         resource_pool: "{{ resource_pool }}"
         datastore: "{{ datastore }}"
         state: powered-on  # Power on the VM after creation
