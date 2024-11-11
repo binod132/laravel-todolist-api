@@ -45,6 +45,10 @@
         cdrom:
           - type: iso
             iso_path: "{{ iso_datastore }} {{ iso_path }}"  # Datastore path to ISO file
+            controller_type: "ide"
+            controller_number: 0  # Specify a valid controller number
+            unit_number: 0        # Specify a valid unit number
+            state: "present"
         networks:
           - name: "{{ network_name }}"  # Connect to the specified network
             type: dhcp  # Use DHCP for automatic IP assignment
