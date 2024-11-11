@@ -1,0 +1,16 @@
+- name: Create a new VM from template on ESXi host
+  hosts: localhost  # Run tasks on the Ansible control machine (localhost)
+  gather_facts: yes
+  collections:
+    - community.vmware
+  vars:
+    ansible_python_interpreter: /usr/bin/python3  # Update if necessary
+
+  tasks:
+    - name: Clone VM from template using esxcli
+      local_action: command esxcli --server={{ ansible_host }} --username=root --password={{ ansible_ssh_pass }} system vmware template deploy --template "jump-server" --vmname "new-ansible-vm" --datastore "datastore1" --network "VM Network" --ip 192.168.130.12 --netmask 255.255.255.0 --gateway 192.168.130.1 --cpus 2 --memory 4096
+      register: vm_clone_result
+
+    - name: Check VM creation result
+      debug:
+        var: vm_clone_result
