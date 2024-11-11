@@ -12,6 +12,8 @@
         folder: "/vmfs/volumes/datastore1/vm"  # Specify the folder to create the VM in
         name: "new-ansible-vm"  # The name of the new VM
         state: "powered-on"
+        datacenter: "ha-datacenter"
+        host: "192.168.130.210"
         clone:
           # Specify the name of the running VM that you want to clone
           source_vm: "jump-server"
