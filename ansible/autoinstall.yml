@@ -4,8 +4,9 @@
   gather_facts: false
   vars:
     workingdir: "{{ lookup('env','HOME') }}/ubuntu-autoinstall"   # Temp directory on the Ansible Controller
-    ubuntuiso: ubuntu-20.04.2-live-server-amd64.iso               # Ubuntu ISO filename
-    ubuntuiso_url: http://old-releases.ubuntu.com/releases/20.04/ # Ubuntu ISO URL
+    ubuntuiso: ubuntu-22.04.5-live-server-amd64.iso               # Ubuntu ISO filename
+    #ubuntuiso_url: http://old-releases.ubuntu.com/releases/20.04/ # Ubuntu ISO URL
+    ubuntuiso_url: https://releases.ubuntu.com/jammy/ubuntu-22.04.5-live-server-amd64.iso
     ubuntunewiso: ubuntu.iso                                      # Ubuntu custom ISO name
     vcenterserver: "192.168.130.210"                             # vCenter FQDN
     vcenteruser: "root"                    # vCenter username
