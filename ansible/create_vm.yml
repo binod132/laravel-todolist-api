@@ -19,6 +19,7 @@
         validate_certs: no
         name: "{{ new_vm_name }}"
         template: "{{ vm_template }}"
+        folder: "vmfs/volumes/datastore1/"
         datacenter: "ha-datacenter"
         state: powered-on
         hardware:
