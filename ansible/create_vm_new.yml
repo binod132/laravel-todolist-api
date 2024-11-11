@@ -10,7 +10,7 @@
         username: "root"
         password: "Mid@s123"
         validate_certs: false
-        folder: "/vmfs/volumes/datastore1/vm"  # The folder where the new VM will be created
+        folder: ""  # The folder where the new VM will be created
         datastore: "datastore1"  # The datastore for the new VM
         datacenter: "ha-datacenter"  # The datacenter to use
         host: "localhost.localdomain"  # The ESXi host where the new VM will be placed
