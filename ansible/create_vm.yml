@@ -23,6 +23,7 @@
         datacenter: "ha-datacenter"
         datastore: "datastore1"
         state: powered-on
+        guest_id: "ubuntu64Guest"
         hardware:
           num_cpus: 2
           memory_mb: 4096
