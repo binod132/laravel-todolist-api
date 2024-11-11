@@ -1,27 +1,3 @@
-- name: Clone running VM on ESXi
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Clone running VM (jump-server)
-      community.vmware.vmware_vm_vm:
-        hostname: "192.168.130.210"  # ESXi host IP
-        username: "root"  # ESXi root username
-        password: "Mid@s123"  # ESXi root password
-        datacenter: "ha-datacenter"  # Specify the datacenter
-        datastore: "datastore1"  # Specify the correct datastore
-        folder: "/vmfs/volumes/datastore1/vm"  # Folder to create the new VM in
-        name: "new-ansible-vm"  # The name of the new VM
-        state: "powered-on"  # Power on the new VM
-        clone:
-          parent_vm: "jump-server"  # Specify the source running VM
-          customize: true  # Enable customization
-          customize_spec:
-            hostname: "new-ansible-vm"  # Set the hostname for the new VM
-            memory_mb: 8192  # Memory for the new VM
-            num_cpus: 2  # CPUs for the new VM
-            network:
-              - name: "VM Network"  # Specify the network for the new VM
-        validate_certs: false  # Skip certificate validation (optional)
 - name: Clone a running VM and create a new VM
   hosts: localhost
   gather_facts: no
