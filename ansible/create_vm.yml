@@ -30,7 +30,7 @@
         # Remove network settings to use the default network configuration from the template
         networks:
           - name: "VM Network"
-            type: "network"
+            type: "dhcp"
       register: vm_creation_result
 
     - name: Check VM creation result
