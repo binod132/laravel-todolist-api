@@ -26,7 +26,7 @@
         validate_certs: no
         name: "{{ new_vm_name }}"
         template: "{{ vm_template }}"
-        folder: "/vmfs/volumes/datastore1/"
+        folder: ""
         state: powered-on
         hardware:
           num_cpus: "{{ vm_cpus }}"
