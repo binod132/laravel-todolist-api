@@ -43,9 +43,12 @@
             type: thin  # Thin provisioning (optional)
             datastore: "{{ datastore }}"
         cdrom:
-          type: iso
-          iso_path: "ISO [datastore1] iso/ubuntu-22.04.iso"
-  # Datastore path to ISO file
+          - type: iso
+            iso_path: "{{ iso_datastore }} {{ iso_path }}"  # Datastore path to ISO file
+            controller_type: "ide"
+            controller_number: null
+            unit_number: null
+            state: "present"
         networks:
           - name: "{{ network_name }}"  # Connect to the specified network
             type: dhcp  # Use DHCP for automatic IP assignment
