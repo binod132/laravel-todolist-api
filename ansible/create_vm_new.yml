@@ -55,4 +55,23 @@
             device_type: "vmxnet3"  # Network adapter type
         customization:
           hostname: "{{ vm_name }}"  # Hostname for the new VM
+        customvalues:
+          - key: guestinfo.cloud-init.config.data
+            value: |
+              #cloud-config
+              users:
+                - name: myadmin
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  groups: sudo
+                  shell: /bin/bash
+                  lock_passwd: false
+                  passwd: $6$rounds=4096$abcdefghij$abcde12345fgHIJKLMnoPQRStuVWXYZabcdefghijklmno
+              locale: en_US.UTF-8
+              timezone: America/New_York
+              runcmd:
+                - echo "Setting up language and locale..."
+                - localectl set-locale LANG=en_US.UTF-8
+                - echo "Setting up timezone..."
+                - timedatectl set-timezone America/New_York
+                - echo "Ubuntu VM configured on first boot!"
       delegate_to: localhost
