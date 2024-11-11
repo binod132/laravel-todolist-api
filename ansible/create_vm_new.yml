@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Clone running VM (jump-server)
-      community.vmware.vmware_guest:
+      vmware_vm_vm_docker:
         hostname: "192.168.130.210"
         username: "root"
         password: "Mid@s123"
