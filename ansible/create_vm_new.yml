@@ -39,7 +39,7 @@
             netmask: "{{ vm_netmask }}"
             gateway: "{{ vm_gateway }}"
         disk:
-          - size_gb: 50
+          - size_gb: 100
             type: thin
             datastore: "{{ datastore }}"
       register: vm_creation_result
