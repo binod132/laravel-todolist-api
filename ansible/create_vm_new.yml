@@ -38,7 +38,7 @@
         hardware:
           memory_mb: "{{ memory_mb }}"  # Set memory in MB
           num_cpus: "{{ num_cpus }}"  # Set number of CPUs
-        disks:
+        disk:
           - size_gb: "{{ disk_size_gb }}"  # Set disk size
             type: thin  # Thin provisioning (optional)
             datastore: "{{ datastore }}"
