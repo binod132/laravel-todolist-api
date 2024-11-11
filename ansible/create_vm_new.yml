@@ -5,6 +5,7 @@
     - community.vmware
   vars:
     ansible_python_interpreter: /usr/bin/python3  # Update if necessary
+    ansible_ssh_pass: "Mid@s123"
 
   tasks:
     - name: Clone VM from template using esxcli
