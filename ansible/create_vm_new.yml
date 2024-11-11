@@ -44,7 +44,8 @@
             datastore: "{{ datastore }}"
         cdrom:
           type: iso
-          iso_path: "[datastore1] iso/ubuntu-22.04.iso"  # Datastore path to ISO file
+          iso_path: "ISO [datastore1] iso/ubuntu-22.04.iso"
+  # Datastore path to ISO file
         networks:
           - name: "{{ network_name }}"  # Connect to the specified network
             type: dhcp  # Use DHCP for automatic IP assignment
