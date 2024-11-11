@@ -22,3 +22,25 @@
             network:
               - name: "VM Network"  # Specify the network for the new VM
         validate_certs: false  # Skip certificate validation (optional)
+- name: Clone a running VM and create a new VM
+  hosts: localhost
+  gather_facts: no
+  tasks:
+
+    # Clone the VM
+    - name: Instant Clone a VM
+      community.vmware.vmware_guest_instant_clone:
+        hostname: "192.168.130.210"
+        username: "root"
+        password: "Mid@s123"
+        validate_certs: false
+        folder: "/vmfs/volumes/datastore1/vm"  # The folder where the new VM will be created
+        datastore: "datastore1"  # The datastore for the new VM
+        datacenter: "ha-datacenter"  # The datacenter to use
+        host: "localhost.localdomain"  # The ESXi host where the new VM will be placed
+        name: "ansible-vm"  # The name of the new VM
+        parent_vm: "jump-server"  # The name of the running VM to clone from
+        resource_pool: ""  # The resource pool to place the new VM
+      register: vm_clone
+      delegate_to: localhost
+
