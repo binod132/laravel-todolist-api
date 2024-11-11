@@ -1,49 +1,24 @@
-- name: Create a new VM from template on ESXi host
-  hosts: localhost  # Run the tasks on the Ansible control machine (localhost)
-  gather_facts: yes
-  collections:
-    - community.vmware
-  vars:
-    ansible_python_interpreter: /usr/bin/python3  # Make sure this points to the correct Python interpreter on your control machine
-    vm_template: "jump-server"  # Template name
-    new_vm_name: "new-ansible-vm"  # New VM name
-    vm_network: "VM Network"  # Network to attach the VM to
-    vm_ip: "192.168.130.12"  # IP address to assign to the VM
-    vm_netmask: "255.255.255.0"  # Subnet mask
-    vm_gateway: "192.168.130.1"  # Gateway
-    vm_cpus: 2  # Number of CPUs
-    vm_memory: 4096  # Amount of memory in MB
-    datastore: "datastore1"  # Datastore where the VM should be stored
-    ansible_host: "192.168.130.210"
-    ansible_ssh_pass: "Mid@s123"
-
+- name: Clone running VM on ESXi
+  hosts: localhost
+  gather_facts: no
   tasks:
-    - name: Clone VM from template
-      community.vmware.vmware_guest:
-        hostname: "{{ ansible_host }}"
-        username: root
-        password: "{{ ansible_ssh_pass }}"
-        validate_certs: no
-        name: "{{ new_vm_name }}"
-        template: "{{ vm_template }}"
-        folder: ""
-        state: powered-on
-        hardware:
-          num_cpus: "{{ vm_cpus }}"
-          memory_mb: "{{ vm_memory }}"
-          num_cpu_cores_per_socket: 1
-        networks:
-          - name: "{{ vm_network }}"
-            type: static
-            ip: "{{ vm_ip }}"
-            netmask: "{{ vm_netmask }}"
-            gateway: "{{ vm_gateway }}"
-        disk:
-          - size_gb: 100
-            type: thin
-            datastore: "{{ datastore }}"
-      register: vm_creation_result
-
-    - name: Check VM creation result
-      debug:
-        var: vm_creation_result
+    - name: Clone running VM (jump-server)
+      vmware_vm_vm_docker:
+        hostname: "192.168.130.210"
+        username: "root"
+        password: "Mid@s123"
+        cluster: "ha-datacenter"  # specify the ESXi cluster if applicable
+        datastore: "datastore1"  # specify the correct datastore
+        folder: "/vmfs/volumes/datastore1/vm"  # specify the folder to create the VM in
+        name: "new-ansible-vm"
+        state: "powered-on"
+        clone:
+          template: "jump-server"  # Clone the running VM (jump-server)
+          customize: true
+          customize_spec:
+            hostname: "new-ansible-vm"  # Set the hostname for the new VM
+            memory_mb: 8192  # Memory for the new VM
+            num_cpus: 2  # CPUs for the new VM
+            network:
+              - name: "VM Network"  # Specify the network for the VM
+        validate_certs: false
