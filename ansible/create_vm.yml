@@ -1,10 +1,14 @@
 - name: Create a new VM from template on ESXi host
-  hosts: esxi_host
-  gather_facts: yes
+  hosts: localhost
+  gather_facts: no
   collections:
     - community.vmware
   vars:
-    ansible_python_interpreter: /usr/bin/python3  # Update if necessary
+    ansible_python_interpreter: /usr/bin/python3
+    vm_template: "jump-server"
+    new_vm_name: "new-ansible-vm"
+    ansible_host: "192.168.130.210"
+    ansible_ssh_pass: "Mid@s123"
 
   tasks:
     - name: Clone VM from template
@@ -13,20 +17,17 @@
         username: root
         password: "{{ ansible_ssh_pass }}"
         validate_certs: no
-        name: "new-ansible-vm"
-        template: "jump-server"
+        name: "{{ new_vm_name }}"
+        template: "{{ vm_template }}"
+        datacenter: "ha-datacenter"
         state: powered-on
         hardware:
           num_cpus: 2
           memory_mb: 4096
-          num_cpu_cores_per_socket: 1
-        networks:
-          - name: "VM Network"
-            type: static
-            ip: "192.168.130.12"
-            netmask: "255.255.255.0"
-            gateway: "192.168.130.1"
-        disk:
-          - size_gb: 50
-            type: thin
-            datastore: "datastore1"
+        # Remove the disk configuration and use default settings from the template
+        # Remove network settings to use the default network configuration from the template
+      register: vm_creation_result
+
+    - name: Check VM creation result
+      debug:
+        var: vm_creation_result
