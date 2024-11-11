@@ -5,7 +5,7 @@
     - community.vmware
   vars:
     ansible_python_interpreter: /usr/bin/python3  # Make sure this points to the correct Python interpreter on your control machine
-    vm_template: "jump-box"  # Template name
+    vm_template: "jump-server"  # Template name
     new_vm_name: "new-ansible-vm"  # New VM name
     vm_network: "VM Network"  # Network to attach the VM to
     vm_ip: "192.168.130.12"  # IP address to assign to the VM
