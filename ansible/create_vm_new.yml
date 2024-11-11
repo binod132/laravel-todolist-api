@@ -20,3 +20,59 @@
       register: vm_clone
       delegate_to: localhost
 
+---
+- name: Create a New Ubuntu VM from Scratch with ISO Boot
+  hosts: localhost
+  gather_facts: no
+  become: false
+
+  vars:
+    vcenter_hostname: "192.168.130.210"  # vCenter or ESXi server IP/hostname
+    vcenter_username: "root"
+    vcenter_password: "Mid@s123"
+    datacenter: "ha-datacenter"  # Datacenter name
+    resource_pool: ""  # Resource pool name
+    datastore: "datastore1"  # Datastore for VM storage
+    vm_name: "new-ubuntu-vm"  # Name of the new VM
+    vm_folder: ""  # Folder path for VMs
+    network_name: "VM Network"  # VM network
+    guest_id: "ubuntu64Guest"  # VMware guest ID for Ubuntu 64-bit
+    disk_size_gb: 100  # Disk size in GB
+    memory_mb: 4096  # Memory size in MB
+    num_cpus: 2  # Number of CPUs
+    iso_datastore: "[datastore1]"  # Datastore where ISO is stored (update as needed)
+    iso_path: "iso/ubuntu-22.04.iso"  # Path to the ISO file in the datastore
+
+  tasks:
+    - name: Create a new VM from scratch with ISO attached
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        name: "{{ vm_name }}"
+        datacenter: "{{ datacenter }}"
+        folder: "{{ vm_folder }}"
+        cluster: "{{ cluster_name }}"
+        resource_pool: "{{ resource_pool }}"
+        datastore: "{{ datastore }}"
+        state: powered-on  # Power on the VM after creation
+        guest_id: "{{ guest_id }}"  # Specify OS type (e.g., ubuntu64Guest)
+        hardware:
+          memory_mb: "{{ memory_mb }}"  # Set memory in MB
+          num_cpus: "{{ num_cpus }}"  # Set number of CPUs
+        disks:
+          - size_gb: "{{ disk_size_gb }}"  # Set disk size
+            type: thin  # Thin provisioning (optional)
+            datastore: "{{ datastore }}"
+        cdrom:
+          type: iso
+          iso_path: "{{ iso_datastore }} {{ iso_path }}"  # Datastore path to ISO file
+        networks:
+          - name: "{{ network_name }}"  # Connect to the specified network
+            type: dhcp  # Use DHCP for automatic IP assignment
+            device_type: "vmxnet3"  # Network adapter type
+        customization:
+          hostname: "{{ vm_name }}"  # Hostname for the new VM
+          domain: "example.com"  # Domain for the VM
+      delegate_to: localhost
