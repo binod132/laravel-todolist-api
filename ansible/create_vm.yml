@@ -1,11 +1,10 @@
----
 - name: Create a new VM from template on ESXi host
   hosts: esxi_host
   gather_facts: yes
   collections:
     - community.vmware
   vars:
-    ansible_python_interpreter: /usr/bin/python3
+    ansible_python_interpreter: /usr/bin/python3  # Update if necessary
 
   tasks:
     - name: Clone VM from template
@@ -24,9 +23,9 @@
         networks:
           - name: "VM Network"
             type: static
-            ip: "192.168.130.12"  # Static IP address
-            netmask: "255.255.255.0"  # Subnet mask
-            gateway: "192.168.130.1"  # Gateway IP
+            ip: "192.168.130.12"
+            netmask: "255.255.255.0"
+            gateway: "192.168.130.1"
         disk:
           - size_gb: 50
             type: thin
