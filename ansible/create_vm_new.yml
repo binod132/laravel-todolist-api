@@ -1,17 +1,46 @@
 - name: Create a new VM from template on ESXi host
-  hosts: localhost  # Run tasks on the Ansible control machine (localhost)
+  hosts: localhost  # Run the tasks on the Ansible control machine (localhost)
   gather_facts: yes
   collections:
     - community.vmware
   vars:
-    ansible_python_interpreter: /usr/bin/python3  # Update if necessary
-    ansible_ssh_pass: "Mid@s123"
+    ansible_python_interpreter: /usr/bin/python3  # Make sure this points to the correct Python interpreter on your control machine
+    vm_template: "jump-server"  # Template name
+    new_vm_name: "new-ansible-vm"  # New VM name
+    vm_network: "VM Network"  # Network to attach the VM to
+    vm_ip: "192.168.130.12"  # IP address to assign to the VM
+    vm_netmask: "255.255.255.0"  # Subnet mask
+    vm_gateway: "192.168.130.1"  # Gateway
+    vm_cpus: 2  # Number of CPUs
+    vm_memory: 4096  # Amount of memory in MB
+    datastore: "datastore1"  # Datastore where the VM should be stored
 
   tasks:
-    - name: Clone VM from template using esxcli
-      local_action: command esxcli --server={{ ansible_host }} --username=root --password={{ ansible_ssh_pass }} system vmware template deploy --template "jump-server" --vmname "new-ansible-vm" --datastore "datastore1" --network "VM Network" --ip 192.168.130.12 --netmask 255.255.255.0 --gateway 192.168.130.1 --cpus 2 --memory 4096
-      register: vm_clone_result
+    - name: Clone VM from template
+      community.vmware.vmware_guest:
+        hostname: "{{ ansible_host }}"
+        username: root
+        password: "{{ ansible_ssh_pass }}"
+        validate_certs: no
+        name: "{{ new_vm_name }}"
+        template: "{{ vm_template }}"
+        state: powered-on
+        hardware:
+          num_cpus: "{{ vm_cpus }}"
+          memory_mb: "{{ vm_memory }}"
+          num_cpu_cores_per_socket: 1
+        networks:
+          - name: "{{ vm_network }}"
+            type: static
+            ip: "{{ vm_ip }}"
+            netmask: "{{ vm_netmask }}"
+            gateway: "{{ vm_gateway }}"
+        disk:
+          - size_gb: 50
+            type: thin
+            datastore: "{{ datastore }}"
+      register: vm_creation_result
 
     - name: Check VM creation result
       debug:
-        var: vm_clone_result
+        var: vm_creation_result
