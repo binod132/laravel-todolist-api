@@ -25,7 +25,7 @@
         validate_certs: false
         name: "{{ vm_name }}"
         state: poweredon
-        template: "iso/os_template/ubuntu-server-template/ubuntu 22.04.vmx"                      # Path to the template's VMX file on ESXi
+        template: "ubuntu"                      # Path to the template's VMX file on ESXi
         folder: "{{ vmfolder }}"
         datastore: "{{ datastore }}"
         disk:
