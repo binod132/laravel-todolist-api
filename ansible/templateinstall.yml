@@ -14,6 +14,7 @@
     vm_cpus: 1                                               # Number of CPUs
     vm_cpu_cores: 1                                          # CPU cores per socket
     vm_network: "VM Network"                                  # Network port group
+    vmfolder: ""
 
   tasks:
     - name: Deploy Ubuntu VM from Template on ESXi
@@ -25,6 +26,7 @@
         name: "{{ vm_name }}"
         state: poweredon
         template: "{{ template_path }}"                      # Path to the template's VMX file on ESXi
+        folder: "{{ vmfolder }}"
         datastore: "{{ datastore }}"
         disk:
           - size_gb: "{{ vm_disk_size }}"
