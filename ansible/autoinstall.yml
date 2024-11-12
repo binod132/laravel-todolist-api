@@ -79,14 +79,14 @@
  
     - name: Copy txt.cfg from ubuntu ISO
       ansible.builtin.copy:
-        src: "{{ workingdir }}/iso/isolinux/txt.cfg"
-        dest: "{{ workingdir }}/isocopy/isolinux/"
+        src: "{{ workingdir }}/iso/boot/grub/grub.cfg"
+        dest: "{{ workingdir }}/isocopy/boot/"
         mode: "775"
  
  
-    - name: Edit txt.cfg to modify append line
+    - name: Edit grub.cfg to modify append line
       ansible.builtin.replace:
-        dest: "{{ workingdir }}/isocopy/isolinux/txt.cfg"
+        dest: "{{ workingdir }}/isocopy/boot/grub.cfg"
         regexp: 'append   initrd=/casper/initrd quiet  ---'
         replace: 'append   initrd=/casper/initrd quiet --- autoinstall ds=nocloud;s=/cdrom/autoinstall/'
  
