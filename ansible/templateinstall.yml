@@ -1,49 +1,43 @@
 ---
 - hosts: localhost
-  name: DeployUbuntuVMFromTemplate
+  name: Deploy Ubuntu VM from Template on ESXi
   gather_facts: false
   vars:
-    vcenterserver: "192.168.130.210"                            # vCenter FQDN
-    vcenteruser: "root"                                          # vCenter username
-    vcenterpassword: "Mid@s123"                                  # vCenter password
-    datacenter: "ha-datacenter"                                  # vCenter datacenter
-    vspherecluster: ""                                           # vCenter cluster
-    vmfolder: ""                                                 # vCenter VM folder
-    datastore: "datastore1"                                      # vSphere datastore
-    template_path: "/vmfs/volumes/datastore1/iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Path to the template
-    ubuntuvmname: "ubuntu-server"                                # Ubuntu VM name
-    ubuntuvmdisksize: 50                                         # VM disk size (in GB)
-    ubuntuvmmemorysize: 2048                                     # VM memory size (in MB)
-    ubuntuvmcpus: 1                                              # VM number of CPUs
-    ubuntuvmcpucores: 1                                          # VM CPU cores per socket
-    ubuntuvmportgroup: "VM Network"                               # VM network port group
+    esxi_host: "192.168.130.210"                            # ESXi host IP
+    esxi_user: "root"                                        # ESXi username
+    esxi_password: "Mid@s123"                                # ESXi password
+    datastore: "datastore1"                                  # ESXi datastore
+    template_path: "/vmfs/volumes/datastore1/iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Full path to the template on ESXi
+    vm_name: "ubuntu-server"                                 # VM name
+    vm_disk_size: 50                                         # Disk size in GB
+    vm_memory_size: 2048                                     # Memory size in MB
+    vm_cpus: 1                                               # Number of CPUs
+    vm_cpu_cores: 1                                          # CPU cores per socket
+    vm_network: "VM Network"                                  # Network port group
 
   tasks:
-    - name: Deploy Ubuntu VM from Template
+    - name: Deploy Ubuntu VM from Template on ESXi
       community.vmware.vmware_guest:
-        hostname: "{{ vcenterserver }}"
-        username: "{{ vcenteruser }}"
-        password: "{{ vcenterpassword }}"
+        hostname: "{{ esxi_host }}"
+        username: "{{ esxi_user }}"
+        password: "{{ esxi_password }}"
         validate_certs: false
-        name: "{{ ubuntuvmname }}"
+        name: "{{ vm_name }}"
         state: poweredon
-        template: "{{ template_path }}"
-        cluster: "{{ vspherecluster }}"
-        datacenter: "{{ datacenter }}"
-        folder: "{{ vmfolder }}"
+        template: "{{ template_path }}"                      # Path to the template's VMX file on ESXi
+        datastore: "{{ datastore }}"
         disk:
-          - size_gb: "{{ ubuntuvmdisksize }}"
+          - size_gb: "{{ vm_disk_size }}"
             type: thin
             datastore: "{{ datastore }}"
         hardware:
-          memory_mb: "{{ ubuntuvmmemorysize }}"
-          num_cpus: "{{ ubuntuvmcpus }}"
-          num_cpu_cores_per_socket: "{{ ubuntuvmcpucores }}"
+          memory_mb: "{{ vm_memory_size }}"
+          num_cpus: "{{ vm_cpus }}"
+          num_cpu_cores_per_socket: "{{ vm_cpu_cores }}"
           scsi: paravirtual
         networks:
-          - name: "{{ ubuntuvmportgroup }}"
+          - name: "{{ vm_network }}"
             device_type: vmxnet3
         annotation: |
           *** Auto-Deployed by Ansible ***
-          VM name: {{ ubuntuvmname }}
-
+          VM name: {{ vm_name }}
