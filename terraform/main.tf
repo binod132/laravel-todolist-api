@@ -30,16 +30,17 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-# Define the folder for the VM
+# Define the folder for the VM (path to the folder, not datacenter_id)
 data "vsphere_folder" "vm_folder" {
   path          = "vm"  # Root folder for VMs in ESXi
-  datacenter_id = data.vsphere_datacenter.dc.id
+  datacenter    = data.vsphere_datacenter.dc
 }
 
 # Create a new VM from the template
 resource "vsphere_virtual_machine" "vm" {
   name             = "terraform-vm"
-  folder_id        = data.vsphere_folder.vm_folder.id  # Reference to the VM folder
+  resource_pool_id = data.vsphere_datacenter.dc.resource_pool.id  # Use root resource pool for ESXi
+  folder           = data.vsphere_folder.vm_folder.path  # Folder where the VM will be created
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = 2
   memory           = 4096
