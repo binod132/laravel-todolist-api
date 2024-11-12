@@ -71,7 +71,7 @@
 ## Details of the issue and the workaround: https://askubuntu.com/questions/1394441/ubuntu-20-04-3-autoinstall-with-embedded-user-data-crashing-i-got-workaround
  
     - name: Extract the Packages.gz file on Ubuntu ISO
-      ansible.builtin.command: "gunzip -f {{ workingdir }}/iso/dists/focal/main/binary-amd64/Packages.gz --keep"
+      ansible.builtin.command: "gunzip -f {{ workingdir }}/iso/dists/jammy/main/binary-amd64/Packages.gz --keep"
       changed_when: false
  
 ## End workaround issue with Ubuntu autoinstall
