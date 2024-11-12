@@ -7,7 +7,7 @@
     esxi_user: "root"                                        # ESXi username
     esxi_password: "Mid@s123"                                # ESXi password
     datastore: "datastore1"                                  # ESXi datastore
-    template_path: "/vmfs/volumes/6421add6-5da995d3-b30d-089204b6341e/iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Full path to the template on ESXi
+    template_path: "iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Full path to the template on ESXi
     vm_name: "ubuntu-server"                                 # VM name
     vm_disk_size: 50                                         # Disk size in GB
     vm_memory_size: 2048                                     # Memory size in MB
@@ -25,7 +25,7 @@
         validate_certs: false
         name: "{{ vm_name }}"
         state: poweredon
-        template: "{{ template_path }}"                      # Path to the template's VMX file on ESXi
+        template: "iso/os_template/ubuntu-24.04/ubuntu.vmx"                      # Path to the template's VMX file on ESXi
         folder: "{{ vmfolder }}"
         datastore: "{{ datastore }}"
         disk:
