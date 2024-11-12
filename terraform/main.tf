@@ -28,7 +28,6 @@ data "vsphere_virtual_machine" "template" {
 
 resource "vsphere_virtual_machine" "vm" {
   name             = "terraform-vm"
-  resource_pool_id = data.vsphere_datacenter.dc.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = 2
   memory           = 4096
