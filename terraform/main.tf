@@ -40,7 +40,7 @@ resource "vsphere_virtual_machine" "test2" {
 
   disk {
    size             = 16
-   name             = "test2.vmdk"
+   lable            = "tf"
    eagerly_scrub    = false
    thin_provisioned = true
   }
