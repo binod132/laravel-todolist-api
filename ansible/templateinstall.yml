@@ -7,7 +7,7 @@
     esxi_user: "root"                                        # ESXi username
     esxi_password: "Mid@s123"                                # ESXi password
     datastore: "datastore1"                                  # ESXi datastore
-    template_path: "iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Full path to the template on ESXi
+    template_path: "iso/os_template/ubuntu-24.04"  # Full path to the template on ESXi
     vm_name: "ubuntu-server"                                 # VM name
     vm_disk_size: 50                                         # Disk size in GB
     vm_memory_size: 2048                                     # Memory size in MB
