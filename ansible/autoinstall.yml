@@ -156,7 +156,7 @@
           num_cpu_cores_per_socket: "{{ ubuntuvmcpucores }}"
           scsi: paravirtual
         networks:
-          - name: "{{ ubuntuvmportgroup }}"
+          - name: "VM Network"
             device_type: vmxnet3
         cdrom:
           - controller_number: 0
