@@ -32,8 +32,8 @@ data "vsphere_virtual_machine" "template" {
 
 # Define the folder for the VM (path to the folder, not datacenter_id)
 data "vsphere_folder" "vm_folder" {
-  path          = "vm"  # Root folder for VMs in ESXi
-  datacenter    = data.vsphere_datacenter.dc
+  path          = ""  # Root folder for VMs in ESXi
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 # Create a new VM from the template
