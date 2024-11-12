@@ -37,7 +37,6 @@ resource "vsphere_virtual_machine" "test2" {
    network_id     = "${data.vsphere_network.mgmt_lan.id}"
    adapter_type   = "vmxnet3"
   }
-
   disk {
    size             = 16
    lable            = "tf"
