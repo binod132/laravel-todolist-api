@@ -22,12 +22,12 @@ data "vsphere_network" "network" {
 }
 
 data "vsphere_virtual_machine" "template" {
-  name          = "your-template-name"
+  name          = "ubuntu.vmx"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = "your-vm-name"
+  name             = "terraform-vm"
   resource_pool_id = data.vsphere_datacenter.dc.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = 2
@@ -50,16 +50,16 @@ resource "vsphere_virtual_machine" "vm" {
 
     customize {
       linux_options {
-        host_name = "your-vm-hostname"
-        domain    = "your-domain.local"
+        host_name = "terraform-vm"
+        domain    = "tv.local"
       }
 
       network_interface {
-        ipv4_address = "your-ipv4-address"
+        ipv4_address = "192.168.130.112"
         ipv4_netmask = 24
       }
 
-      ipv4_gateway = "your-gateway-ip"
+      ipv4_gateway = "192.168.130.1"
     }
   }
 }
