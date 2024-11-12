@@ -26,13 +26,13 @@ data "vsphere_network" "network" {
 
 # Define the VM template on ESXi
 data "vsphere_virtual_machine" "template" {
-  name          = "ubuntu.vmx"
+  name          = "iso/os_template/ubuntu-24.04/ubuntu.vmx"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 # Define the folder for the VM (path to the folder, not datacenter_id)
 data "vsphere_folder" "vm_folder" {
-  path          = ""  # Root folder for VMs in ESXi
+  path          = "vmfs"  # Root folder for VMs in ESXi
 }
 
 # Create a new VM from the template
