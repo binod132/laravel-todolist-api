@@ -2,57 +2,64 @@ provider "vsphere" {
   user           = "root"
   password       = "Mid@s123"
   vsphere_server = "192.168.130.210"
+
+  # If your server uses a self-signed certificate
   allow_unverified_ssl = true
 }
 
-# Define variables for flexibility
-variable "vm_name" {
-  default = "terraform-vm"
+data "vsphere_datacenter" "dc" {
+  name = "ha-datacenter"
 }
 
-variable "template_uuid" {
-  default = "your_template_uuid"  # Replace with your template UUID
+data "vsphere_datastore" "datastore" {
+  name          = "datastore1"
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-# VM Resource Configuration
-resource "vsphere_virtual_machine" "new_vm" {
-  name             = var.vm_name
-  resource_pool_id = "Resources"               # Default resource pool in ESXi
-  datastore_id     = "datastore1"              # Replace with your datastore name or ID
-  num_cpus         = 2                         # Set desired CPU count
-  memory           = 4096                      # Set desired memory in MB (4GB)
-  guest_id         = "ubuntu64Guest"           # Match the guest OS type of the template
+data "vsphere_network" "network" {
+  name          = "VM Network"
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
 
-  # Configure the disk
+data "vsphere_virtual_machine" "template" {
+  name          = "your-template-name"
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+resource "vsphere_virtual_machine" "vm" {
+  name             = "your-vm-name"
+  resource_pool_id = data.vsphere_datacenter.dc.resource_pool_id
+  datastore_id     = data.vsphere_datastore.datastore.id
+  num_cpus         = 2
+  memory           = 4096
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  network_interface {
+    network_id   = data.vsphere_network.network.id
+    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  }
+
   disk {
     label            = "disk0"
-    size             = 20                      # Disk size in GB
+    size             = data.vsphere_virtual_machine.template.disks[0].size
     eagerly_scrub    = false
-    thin_provisioned = true                    # Use thin provisioning for disk
+    thin_provisioned = true
   }
 
-  # Configure the network interface
-  network_interface {
-    network_id   = "VM Network"                # Replace with your network name or ID
-    adapter_type = "vmxnet3"
-  }
-
-  # Clone from the template
   clone {
-    template_uuid = var.template_uuid
+    template_uuid = data.vsphere_virtual_machine.template.id
 
     customize {
       linux_options {
-        host_name = var.vm_name
-        domain    = "local"
+        host_name = "your-vm-hostname"
+        domain    = "your-domain.local"
       }
 
-      # Network configuration
       network_interface {
-        ipv4_address = "192.168.130.115"         # Desired static IP
-        ipv4_netmask = 24                      # Network mask (e.g., 24 for /24 network)
+        ipv4_address = "your-ipv4-address"
+        ipv4_netmask = 24
       }
-      ipv4_gateway = "192.168.130.1"             # Network gateway
+
+      ipv4_gateway = "your-gateway-ip"
     }
   }
 }
