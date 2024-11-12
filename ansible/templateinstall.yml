@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  name: DeployUbuntuVMFromTemplate
+  gather_facts: false
+  vars:
+    vcenterserver: "192.168.130.210"                            # vCenter FQDN
+    vcenteruser: "root"                                          # vCenter username
+    vcenterpassword: "Mid@s123"                                  # vCenter password
+    datacenter: "ha-datacenter"                                  # vCenter datacenter
+    vspherecluster: ""                                           # vCenter cluster
+    vmfolder: ""                                                 # vCenter VM folder
+    datastore: "datastore1"                                      # vSphere datastore
+    template_path: "/vmfs/volumes/datastore1/iso/os_template/ubuntu-24.04/ubuntu.vmx"  # Path to the template
+    ubuntuvmname: "ubuntu-server"                                # Ubuntu VM name
+    ubuntuvmdisksize: 50                                         # VM disk size (in GB)
+    ubuntuvmmemorysize: 2048                                     # VM memory size (in MB)
+    ubuntuvmcpus: 1                                              # VM number of CPUs
+    ubuntuvmcpucores: 1                                          # VM CPU cores per socket
+    ubuntuvmportgroup: "VM Network"                               # VM network port group
+
+  tasks:
+    - name: Deploy Ubuntu VM from Template
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        name: "{{ ubuntuvmname }}"
+        state: poweredon
+        template: "{{ template_path }}"
+        cluster: "{{ vspherecluster }}"
+        datacenter: "{{ datacenter }}"
+        folder: "{{ vmfolder }}"
+        disk:
+          - size_gb: "{{ ubuntuvmdisksize }}"
+            type: thin
+            datastore: "{{ datastore }}"
+        hardware:
+          memory_mb: "{{ ubuntuvmmemorysize }}"
+          num_cpus: "{{ ubuntuvmcpus }}"
+          num_cpu_cores_per_socket: "{{ ubuntuvmcpucores }}"
+          scsi: paravirtual
+        networks:
+          - name: "{{ ubuntuvmportgroup }}"
+            device_type: vmxnet3
+        annotation: |
+          *** Auto-Deployed by Ansible ***
+          VM name: {{ ubuntuvmname }}
+
