@@ -181,8 +181,6 @@
         schema: vsphere
       register: vm_facts
       until: vm_facts.instance.guest.hostName is search(ubuntuoshostname)
-      retries: 30
-      delay: 60
  
  
     - name: Set password for the ubuntu user
