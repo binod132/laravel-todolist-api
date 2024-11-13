@@ -1,31 +1,23 @@
 ---
-- name: Create and Boot VM on ESXi Host using existing VMX and VMDK files
+- name: Register and start a VM on standalone ESXi
   hosts: localhost
   gather_facts: no
-  tasks:
-    - name: Connect to ESXi host
-      vmware_vm_vm_docker:
-        hostname: "your-esxi-host"
-        username: "your-username"
-        password: "your-password"
-        validate_certs: no
-        state: "present"
-        vm_id: "existing-vm-id"   # VM ID to register or boot (if exists)
-        template: "no"
-        esxi_host: "your-esxi-host"
-        datastore: "datastore1"
-        vmx_path: "/vmfs/volumes/datastore1/your-vm.vmx"
-        vm_name: "YourVMName"
-        wait_for_ip_address: yes
-        power_on: yes
-        folder: "/vmfs/volumes/datastore1/vm_folder"
-        resource_pool: "Resources"
+  vars:
+    esxi_host: "192.168.130.210"
+    esxi_user: "root"
+    esxi_password: "Mid@s123"
+    vmx_path: "[datastore1] path/to/your-vm-folder/your-vm.vmx"  # Replace with the path to your .vmx file
+    vm_name: "ansible-vm"  # Name to assign to the VM
 
-    - name: Power on VM if registered
-      vmware_vm_vm_docker:
-        hostname: "your-esxi-host"
-        username: "your-username"
-        password: "your-password"
+  tasks:
+    - name: Register VM from VMX file
+      ansible.vmware.vmware_guest:
+        hostname: "{{ esxi_host }}"
+        username: "{{ esxi_user }}"
+        password: "{{ esxi_password }}"
         validate_certs: no
-        state: "poweredon"
-        name: "YourVMName"
+        name: "{{ vm_name }}"
+        folder: ""
+        state: powered_on
+        vmx_path: "{{ vmx_path }}"
+      delegate_to: localhost

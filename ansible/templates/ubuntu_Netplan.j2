@@ -1,0 +1,12 @@
+# ubuntu_Netplan.j2
+network:
+  version: 2
+  ethernets:
+    ens192: 
+      dhcp4: no
+      addresses:
+        - 192.168.130.114
+      gateway4: 192.168.130.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
