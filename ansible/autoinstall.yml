@@ -18,14 +18,14 @@
     datastoredir: /ISO                                            # vSphere datastore ISO directory
     ubuntuvmname: ubuntu-server                                   # Ubuntu VM name of the virtual machine
     ubuntuvmdisksize: 50                                          # Ubuntu VM disksize in gigabytes
-    ubuntuvmmemorysize: 2048                                      # Ubuntu VM memory size in megabytes
-    ubuntuvvmcpus: 1                                              # Ubuntu VM number of CPUs
-    ubuntuvmcpucores: 1                                           # Ubuntu VM number of cores
-    ubuntuvmportgroup: VLAN-0                                   # Ubuntu VM vSphere portgroup
+    ubuntuvmmemorysize: 4048                                      # Ubuntu VM memory size in megabytes
+    ubuntuvvmcpus: 3                                              # Ubuntu VM number of CPUs
+    ubuntuvmcpucores: 3                                           # Ubuntu VM number of cores
+    ubuntuvmportgroup: 0                                   # Ubuntu VM vSphere portgroup
     ubuntuoslocale: en_US                                         # Ubuntu OS locale
     ubuntuoskeyboardlayout: en                                    # Ubuntu OS keyboard layout
     ubuntuoskeyboardvariant: us                                   # Ubuntu OS keyboard variant
-    ubuntuosipv4address: 192.168.130.113/24                           # Ubuntu OS IPv4 address
+    ubuntuosipv4address: 192.168.130.114/24                           # Ubuntu OS IPv4 address
     ubuntuosipv4gateway: 192.168.130.1                               # Ubuntu OS IPv4 gateway
     ubuntuosipv4dns: 8.8.8.8                                   # Ubuntu OS DNS server
     ubuntuossearchdomain: ""                               # Ubuntu OS DNS search domain
@@ -200,7 +200,7 @@
  
     - name: Copy network configuration file to working directory
       ansible.builtin.template:
-        src: ./ubuntu_Netplan.j2
+        src: ./templates/ubuntu_Netplan.j2
         dest: "{{ workingdir }}/00-installer-config.yaml"
         mode: "755"
  
