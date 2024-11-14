@@ -14,13 +14,13 @@ else
     echo "APP_KEY already set."
 fi
 
-# Run the artisan command to generate passport keys if they don't exist
-if [ ! -f /var/www/storage/oauth-private.key ]; then
-    echo "Generating Passport keys..."
-    php artisan passport:keys
-else
-    echo "Passport keys already exist."
-fi
+# # Run the artisan command to generate passport keys if they don't exist
+# if [ ! -f /var/www/storage/oauth-private.key ]; then
+#     echo "Generating Passport keys..."
+#     php artisan passport:keys
+# else
+#     echo "Passport keys already exist."
+# fi
 
 # Bring PHP-FPM to the foreground
 wait
