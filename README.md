@@ -13,10 +13,10 @@
    Please note docker-compose.yml on root dir.
    - I have created postgres database and redis using docker compose. [15min]
 ### For deployment
-1. **Remote Server Setup: Use Vagrant, Multipass, or similar virtualization tools to set up a remote server.**
+1. **Remote Server Setup: Use Vagrant, Multipass, or similar virtualization tools to set up a remote server.** [30min]
 
 - I have created Ubuntu 22.4 VM using ESXI, with 3core CPU and 6GB Memory, and Static IP.
-2. **Self-Hosted Runner: Set up a GitHub or Bitbucket self-hosted runner.**
+2. **Self-Hosted Runner: Set up a GitHub or Bitbucket self-hosted runner.**[20min]
 
    - I have created Ubuntu 22.4 VM and setup self-hosted runner.
    ```
@@ -27,9 +27,26 @@
    sudo ./svc.sh install
    sudo ./svc.sh start
    sudo ./svc.sh status
-
    ```
+   - Use self-hosted runner in gitaction.
+   ```
+   jobs:
+   deploy:
+    runs-on: self-hosted 
+   ```
+3. **CI/CD Pipeline: Implement a CI/CD pipeline with GitHub Actions or Bitbucket Pipelines, including build, test, and deployment stages. Use the self-hosted runner for this pipeline.**
 
+   Please refer to .github/workflows/deploy.yaml action file.
+   - I have created github action file as CICD. It SSH to remote host, pull github repo and run docker compose down and up. Docker compose file builds and run containers for todo-app, redis, postgres, nginx. [30min]
+   - Future work, use docker registry to upload pre-build docker image, and use trivy/sonar on CICD to scan image.
+4. **Deployment: Deploy the application to a remote server without Docker using a web server (e.g., Nginx) and a PHP processor (e.g., PHP-FPM). This deployment should occur from your GitHub or Bitbucket pipeline using the self-hosted runner.**
+
+   Please refer to above step 3.
+5. **Infrastructure Automation: Write Infrastructure as Code (IaC) or an Ansible playbook to automate the setup of the remote server, including all dependencies.**
+
+   - I have used ansible to provision Linux VM on ESXI, it creates the custom OS, using .vmx file. Please refer to ansible/autoinstall.yml [1hr]
+   - I have used ansible to automate dependencies installation including docker and docker compose. Please refer to ansible/docker.yml [30min]
+6. **Documentation** [1hr]
 
 
 
