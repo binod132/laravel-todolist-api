@@ -7,6 +7,7 @@
     remote_host: 192.168.130.108  # IP of the remote Ubuntu VM
     remote_user: ubuntu           # Username of the remote Ubuntu VM
     remote_password: ubuntu       # SSH password for the remote Ubuntu VM
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o PreferredAuthentications=password'
 
   tasks:
     - name: Set up connection to remote host
