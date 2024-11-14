@@ -68,3 +68,28 @@
     - name: Print Docker PS output
       debug:
         var: docker_ps_output.stdout
+
+
+    - name: Install Docker Compose
+      ansible.builtin.shell:
+        cmd: |
+          sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} << EOF
+          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &&
+          sudo chmod +x /usr/local/bin/docker-compose
+          EOF
+      register: docker_compose_install_output
+      ignore_errors: yes
+
+    - name: Check Docker Compose version
+      ansible.builtin.shell:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'docker-compose --version'"
+      register: docker_compose_version_output
+      ignore_errors: yes
+
+    - name: Print Docker Compose installation result
+      debug:
+        var: docker_compose_install_output.stdout
+
+    - name: Print Docker Compose version
+      debug:
+        var: docker_compose_version_output.stdout
