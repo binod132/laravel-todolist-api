@@ -1,0 +1,21 @@
+---
+- name: SSH Connection via sshpass to remote Ubuntu VM
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ssh_password: "ubuntu"
+    ssh_user: "ubuntu"
+    remote_host: "192.168.130.108"
+    hostname: "test"
+  tasks:
+    - name: Set up SSH connection using sshpass
+      ansible.builtin.command:
+        cmd: "sshpass -p 'ubuntu' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@192.168.130.108"
+      environment:
+        SSH_ASKPASS: /usr/bin/ssh-askpass
+      register: ssh_output
+      delegate_to: localhost
+
+    - name: Print SSH connection result
+      debug:
+        var: ssh_output.stdout
