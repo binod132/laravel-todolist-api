@@ -1,5 +1,5 @@
-- name: Install Docker and Docker Compose on remote Ubuntu VM
-  hosts: localhost  # This is where the playbook starts, but we use `delegate_to` to target remote
+- name: Verify SSH connection and task delegation on remote Ubuntu VM
+  hosts: localhost  # Start locally to set up facts
   become: yes
   gather_facts: yes
   vars:
@@ -15,45 +15,24 @@
         ansible_user: "{{ remote_user }}"
         ansible_ssh_pass: "{{ remote_password }}"
         ansible_ssh_extra_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-      delegate_to: localhost  # Ensure connection setup runs locally
+      delegate_to: localhost  # Run this task locally
 
-    - name: Install aptitude on remote host
-      ansible.builtin.apt:
-        name: aptitude
-        state: latest
-        update_cache: true
-      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
+    - name: Verify SSH connection by running a command (hostname) on the remote host
+      ansible.builtin.command:
+        cmd: hostname
+      delegate_to: "{{ ansible_host }}"  # This will run the command on the remote VM
+      register: hostname_result  # Capture the result for verification
 
-    - name: Install required system packages on remote host
-      ansible.builtin.apt:
-        name: "{{ item }}"
-        state: latest
-        update_cache: true
-      loop:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - software-properties-common
-        - python3-pip
-        - virtualenv
-        - python3-setuptools
-      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
+    - name: Show the output of the hostname command (from the remote VM)
+      debug:
+        msg: "Hostname of the remote VM is: {{ hostname_result.stdout }}"
+      
+    - name: Run a remote command to verify delegation (check disk space)
+      ansible.builtin.command:
+        cmd: df -h
+      delegate_to: "{{ ansible_host }}"  # This will run the command on the remote VM
+      register: df_result  # Capture the result for verification
 
-    - name: Add Docker GPG apt Key on remote host
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
-
-    - name: Add Docker Repository on remote host
-      ansible.builtin.apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
-
-    - name: Update apt and install docker-ce on remote host
-      ansible.builtin.apt:
-        name: docker-ce
-        state: latest
-        update_cache: true
-      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
+    - name: Show disk space output from remote VM
+      debug:
+        msg: "Disk space on the remote VM: {{ df_result.stdout }}"
