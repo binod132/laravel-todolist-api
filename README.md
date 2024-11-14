@@ -37,7 +37,7 @@
 3. **CI/CD Pipeline: Implement a CI/CD pipeline with GitHub Actions or Bitbucket Pipelines, including build, test, and deployment stages. Use the self-hosted runner for this pipeline.**
 
    Please refer to .github/workflows/deploy.yaml action file.
-   - I have created github action file as CICD. It SSH to remote host, pull github repo and run docker compose down and up. Docker compose file builds and run containers for todo-app, redis, postgres, nginx. [30min]
+   - I have created github action file as CICD. It SSH to remote host, pull github repo and run docker compose down and up. Docker compose file builds and run containers for todo-app, redis, postgres, nginx. [1hr]
    - Future work, use docker registry to upload pre-build docker image, and use trivy/sonar on CICD to scan image.
 4. **Deployment: Deploy the application to a remote server without Docker using a web server (e.g., Nginx) and a PHP processor (e.g., PHP-FPM). This deployment should occur from your GitHub or Bitbucket pipeline using the self-hosted runner.**
 
