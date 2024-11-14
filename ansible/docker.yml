@@ -46,6 +46,25 @@
       when: docker_check.rc == 0
       ignore_errors: yes
 
+    - name: Test if Docker is accessible by user without sudo (docker ps)
+      ansible.builtin.shell:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'docker ps'"
+      register: docker_ps_output
+      ignore_errors: yes
+
+    - name: Fail if docker ps shows permission error
+      ansible.builtin.fail:
+        msg: "Permission denied while trying to connect to Docker daemon. The user does not have access to Docker without sudo."
+      when: "'permission denied' in docker_ps_output.stderr"
+
     - name: Print Docker installation result
       debug:
         var: docker_install_output.stdout
+
+    - name: Print Docker service status
+      debug:
+        var: docker_status.stdout
+
+    - name: Print Docker PS output
+      debug:
+        var: docker_ps_output.stdout
