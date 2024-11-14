@@ -129,7 +129,7 @@ Content-Type: application/json
   "password_confirmation": "password"
 }
 ```
-
+![Example Image](screenshots/Screenshot 2024-11-14 at 4.47.45 PM.png)
 #### 2. Login
 
 **Request:**
