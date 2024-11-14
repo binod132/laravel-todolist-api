@@ -1,6 +1,5 @@
----
 - name: Install Docker and Docker Compose on remote Ubuntu VM
-  hosts: localhost  # Run the playbook locally, but target the remote host
+  hosts: localhost  # This is where the playbook starts, but we use `delegate_to` to target remote
   become: yes
   gather_facts: yes
   vars:
@@ -16,39 +15,45 @@
         ansible_user: "{{ remote_user }}"
         ansible_ssh_pass: "{{ remote_password }}"
         ansible_ssh_extra_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-      delegate_to: localhost
+      delegate_to: localhost  # Ensure connection setup runs locally
 
-    - name: Install aptitude
-      apt:
+    - name: Install aptitude on remote host
+      ansible.builtin.apt:
         name: aptitude
         state: latest
         update_cache: true
+      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
 
-    - name: Install required system packages
-      apt:
-        pkg:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-          - python3-pip
-          - virtualenv
-          - python3-setuptools
+    - name: Install required system packages on remote host
+      ansible.builtin.apt:
+        name: "{{ item }}"
         state: latest
         update_cache: true
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - python3-pip
+        - virtualenv
+        - python3-setuptools
+      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
 
-    - name: Add Docker GPG apt Key
-      apt_key:
+    - name: Add Docker GPG apt Key on remote host
+      ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
 
-    - name: Add Docker Repository
-      apt_repository:
+    - name: Add Docker Repository on remote host
+      ansible.builtin.apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
+      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
 
-    - name: Update apt and install docker-ce
-      apt:
+    - name: Update apt and install docker-ce on remote host
+      ansible.builtin.apt:
         name: docker-ce
         state: latest
         update_cache: true
+      delegate_to: "{{ ansible_host }}"  # Delegate to the remote host
