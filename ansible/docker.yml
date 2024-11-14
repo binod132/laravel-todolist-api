@@ -4,9 +4,9 @@
   become: yes
   gather_facts: yes
   vars:
-    ansible_host: 192.168.130.  # Replace with the IP or hostname of your VM
+    ansible_host: 192.168.130.108  # Replace with the IP or hostname of your VM
     ansible_user: ubuntu                  # Replace with your remote username
-    ansible_ssh_pass: your_password       # Replace with your SSH password
+    ansible_ssh_pass: ubuntu       # Replace with your SSH password
 
   tasks:
     - name: Update apt package index

@@ -16,7 +16,7 @@
     vmfolder: ""                                                   # vCenter VM folder
     datastore: "datastore1"                                         # vSphere datastore
     datastoredir: /ISO                                            # vSphere datastore ISO directory
-    ubuntuvmname: ubuntu-server                                   # Ubuntu VM name of the virtual machine
+    ubuntuvmname: test                                   # Ubuntu VM name of the virtual machine
     ubuntuvmdisksize: 50                                          # Ubuntu VM disksize in gigabytes
     ubuntuvmmemorysize: 4048                                      # Ubuntu VM memory size in megabytes
     ubuntuvvmcpus: 3                                              # Ubuntu VM number of CPUs
@@ -25,11 +25,11 @@
     ubuntuoslocale: en_US                                         # Ubuntu OS locale
     ubuntuoskeyboardlayout: en                                    # Ubuntu OS keyboard layout
     ubuntuoskeyboardvariant: us                                   # Ubuntu OS keyboard variant
-    ubuntuosipv4address: 192.168.130.114/24                           # Ubuntu OS IPv4 address
+    ubuntuosipv4address: 192.168.130.108/24                           # Ubuntu OS IPv4 address
     ubuntuosipv4gateway: 192.168.130.1                               # Ubuntu OS IPv4 gateway
     ubuntuosipv4dns: 8.8.8.8                                   # Ubuntu OS DNS server
     ubuntuossearchdomain: ""                               # Ubuntu OS DNS search domain
-    ubuntuoshostname: ansible-vm                             # Ubuntu OS hostname
+    ubuntuoshostname: test                             # Ubuntu OS hostname
     ubuntuosuser: ubuntu                                          # Ubuntu OS username
     ubuntuospassword: ubuntu                                    # Ubuntu OS password
     ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPvCyzw+5v8CqqY0nexodZt+njThMZjJkHFGPBBRy63v1FHCAc8LI5V9/D1oTJjrA8CiXG2slinic8aZmgCGdck0z8gOxV1n4q1E9XkIi28G7KbElSRaS87ez+MmXlSnhqSe07B3lwX6wGEK0n13EewRoNrzatAd13jVNRhviBkROraeEz9JIkeK0aYj1hN2lNYDBHGivfKqxZLS8PTFD/dTPiIW3pG67mlAwIS0adwvdx9UagK+kDn8IpqA7HgE1Dn+fOQHBLE0BFj9DitOMlJZJ/bn5wAdEILI2kqXM6+nbqSgfGL7n6OeSfMfmipcjXHiWCBuuj81JbYUUK4+EeHHLFF7CIEKZViiegSpqIlQg1bhgSjQmTuTVC/K3NEdQi6o93zoC2KKXYFWw5FeVic4iwiLJVA1elgRAqp9uFRZOIS6ZNZWkaMece+S/98/UtOZQ+FSY4tvfVgeSk2v3sePcu2SEzMEFJ179MWufVdLUcoMetu9Yg6DZCtGWoEPk= ubuntu@Binods-MacBook-Pro-2.local
