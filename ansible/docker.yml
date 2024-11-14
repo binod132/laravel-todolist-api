@@ -2,6 +2,11 @@
 - name: SSH Connection via sshpass to remote Ubuntu VM
   hosts: localhost
   gather_facts: no
+  vars:
+    ssh_password: "ubuntu"
+    ssh_user: "ubuntu"
+    remote_host: "192.168.130.108"
+    hostname: "test"
   tasks:
     - name: Set up SSH connection using sshpass
       ansible.builtin.command:
