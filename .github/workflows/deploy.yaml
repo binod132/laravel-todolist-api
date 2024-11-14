@@ -22,9 +22,9 @@ jobs:
       # Step 3: SSH into VM, perform git pull, checkout dev, and run Docker Compose
       - name: SSH into VM, git pull, and run Docker Compose
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH2 }}  # GitHub secret for the private SSH key
+          SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
           SSH_USER: ubuntu  # GitHub secret for the SSH user
-          VM_INTERNAL_IP: "192.168.130.108"  # GitHub secret for the VM's internal IP
+          VM_INTERNAL_IP: "192.168.130.254"  # GitHub secret for the VM's internal IP
         run: |
           # Set up SSH agent to use the private key
           mkdir -p ~/.ssh
