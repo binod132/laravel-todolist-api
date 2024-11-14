@@ -1,0 +1,67 @@
+---
+- name: Install Docker and Docker Compose on remote Ubuntu VM
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    ansible_host: 192.168.130.  # Replace with the IP or hostname of your VM
+    ansible_user: ubuntu                  # Replace with your remote username
+    ansible_ssh_pass: your_password       # Replace with your SSH password
+
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install prerequisites
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+
+    - name: Add Docker’s official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Set up Docker stable repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_facts['lsb']['codename'] }} stable"
+        state: present
+        filename: docker
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.1.1/docker-compose-`uname -s`-`uname -m`
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Verify Docker installation
+      command: docker --version
+      register: docker_version_output
+
+    - name: Verify Docker Compose installation
+      command: docker-compose --version
+      register: docker_compose_version_output
+
+    - name: Display Docker and Docker Compose versions
+      debug:
+        msg:
+          - "Docker version: {{ docker_version_output.stdout }}"
+          - "Docker Compose version: {{ docker_compose_version_output.stdout }}"
