@@ -4,8 +4,33 @@
 
 
    Please check Dockerfile on root dir.
-   - I have created Laravel php-8.2 base-image with common dependencies and saved on self-hosted nexus docker registry. [30min]
-   - 
+   - I have created Laravel php-8.2 base-image with common dependencies and saved on self-hosted nexus docker registry. [15min]
+   - I have created created Multi-stage Dockerfile for todo app. [15min]
+   - I have created docker-compose.yml file to build and run todo app, postgres database, redis and nginx container. All are in same todo-network. For database and redis, there is volume mount for presistance volume. [15min]
+   - Future work: build docker image for todo-app and upload on docker registry to reduce build time. 
+2. **Database and Caching Configuration: Configure database and caching services within the Docker environment.**
+
+   Please note docker-compose.yml on root dir.
+   - I have created postgres database and redis using docker compose. [15min]
+### For deployment
+1. **Remote Server Setup: Use Vagrant, Multipass, or similar virtualization tools to set up a remote server.**
+
+- I have created Ubuntu 22.4 VM using ESXI, with 3core CPU and 6GB Memory, and Static IP.
+2. **Self-Hosted Runner: Set up a GitHub or Bitbucket self-hosted runner.**
+
+   - I have created Ubuntu 22.4 VM and setup self-hosted runner.
+   ```
+   mkdir actions-runner && cd actions-runner
+   curl -o actions-runner-linux-x64-2.308.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz
+   tar xzf ./actions-runner-linux-x64-2.308.0.tar.gz
+   ./config.sh --url https://github.com/binod132/laravel-todolist-api --token AL4P4SQHQH5ILPF42ZIT75DHFXKAA
+   sudo ./svc.sh install
+   sudo ./svc.sh start
+   sudo ./svc.sh status
+
+   ```
+
+
 
 
 # Laravel To-Do List API.
