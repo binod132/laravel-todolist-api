@@ -10,7 +10,7 @@
   tasks:
     - name: Set up SSH connection using sshpass
       ansible.builtin.command:
-        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }}"
+        cmd: "sshpass -p ubuntu ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@182.168.130.108"
       environment:
         SSH_ASKPASS: /usr/bin/ssh-askpass
       register: ssh_output
@@ -19,8 +19,3 @@
     - name: Print SSH connection result
       debug:
         var: ssh_output.stdout
-
-  vars:
-    ssh_user: "ubuntu"  # Remote user on the Ubuntu VM
-    ssh_password: "your_password_here"  # Password for the remote user
-    remote_host: "192.168.130.108"  # IP of the remote Ubuntu VM
