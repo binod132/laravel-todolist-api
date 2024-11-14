@@ -1,26 +1,21 @@
 ---
-- name: Test SSH connection using password
-  hosts: localhost  # Running locally
+- name: SSH Connection via sshpass to remote Ubuntu VM
+  hosts: localhost
   gather_facts: no
-  vars:
-    remote_host: 192.168.130.108  # IP of the remote Ubuntu VM
-    remote_user: ubuntu           # Username for SSH
-    remote_password: ubuntu       # Password for SSH
-
   tasks:
-    - name: Set up connection to remote host
-      set_fact:
-        ansible_host: "{{ remote_host }}"
-        ansible_user: "{{ remote_user }}"
-        ansible_ssh_pass: "{{ remote_password }}"
-        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    - name: Set up SSH connection using sshpass
+      ansible.builtin.command:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'hostname'"
+      environment:
+        SSH_ASKPASS: /usr/bin/ssh-askpass
+      register: ssh_output
       delegate_to: localhost
 
-    - name: Verify SSH connection by running a command on the remote host
-      command: hostname
-      delegate_to: "{{ ansible_host }}"
-      register: result
-
-    - name: Show remote hostname result
+    - name: Print SSH connection result
       debug:
-        msg: "{{ result.stdout }}"
+        var: ssh_output.stdout
+
+  vars:
+    ssh_user: "ubuntu"  # Remote user on the Ubuntu VM
+    ssh_password: "your_password_here"  # Password for the remote user
+    remote_host: "192.168.130.108"  # IP of the remote Ubuntu VM
