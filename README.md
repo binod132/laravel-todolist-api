@@ -1,3 +1,11 @@
+## Answer/Solutions:
+### For local development
+1. *** Dockerize the Application: Create a Docker Compose file to set up the application for local development. Do not use pre-built solutions like Sail or Larasail.*** 
+   Please check Dockerfile on root dir.
+   - I have created Laravel php-8.2 base-image with common dependencies and saved on self-hosted nexus docker registry. [30min]
+   - 
+
+
 # Laravel To-Do List API.
 
 A simple To-Do list API built with Laravel.
@@ -162,7 +170,7 @@ Content-Type: application/json
 
 Replace `YOUR_ACCESS_TOKEN` with the actual token obtained during login for authorization.
 
-
+-----------------------------------
 Steps:
 Docker and Docker Compose installation
 ````
