@@ -82,7 +82,7 @@
 
     - name: Check Docker Compose version
       ansible.builtin.shell:
-        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'docker-compose --version'"
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'docker compose version'"
       register: docker_compose_version_output
       ignore_errors: yes
 
