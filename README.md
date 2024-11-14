@@ -1,7 +1,7 @@
 ## Answer/Solutions:
 ### For local development
 1. **Dockerize the Application: Create a Docker Compose file to set up the application for local development. Do not use pre-built solutions like Sail or Larasail.** 
-   Please check Dockerfile on root dir.
+ Please check Dockerfile on root dir.
    - I have created Laravel php-8.2 base-image with common dependencies and saved on self-hosted nexus docker registry. [30min]
    - 
 
