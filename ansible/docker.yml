@@ -1,12 +1,11 @@
-- name: Verify SSH connection and task delegation on remote Ubuntu VM
-  hosts: localhost  # Start locally to set up facts
-  become: yes
-  gather_facts: yes
+---
+- name: Test SSH connection using password
+  hosts: localhost  # Running locally
+  gather_facts: no
   vars:
     remote_host: 192.168.130.108  # IP of the remote Ubuntu VM
-    remote_user: ubuntu           # Username of the remote Ubuntu VM
-    remote_password: ubuntu       # SSH password for the remote Ubuntu VM
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o PreferredAuthentications=password'
+    remote_user: ubuntu           # Username for SSH
+    remote_password: ubuntu       # Password for SSH
 
   tasks:
     - name: Set up connection to remote host
@@ -14,25 +13,14 @@
         ansible_host: "{{ remote_host }}"
         ansible_user: "{{ remote_user }}"
         ansible_ssh_pass: "{{ remote_password }}"
-        ansible_ssh_extra_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-      delegate_to: localhost  # Run this task locally
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      delegate_to: localhost
 
-    - name: Verify SSH connection by running a command (hostname) on the remote host
-      ansible.builtin.command:
-        cmd: hostname
-      delegate_to: "{{ ansible_host }}"  # This will run the command on the remote VM
-      register: hostname_result  # Capture the result for verification
+    - name: Verify SSH connection by running a command on the remote host
+      command: hostname
+      delegate_to: "{{ ansible_host }}"
+      register: result
 
-    - name: Show the output of the hostname command (from the remote VM)
+    - name: Show remote hostname result
       debug:
-        msg: "Hostname of the remote VM is: {{ hostname_result.stdout }}"
-      
-    - name: Run a remote command to verify delegation (check disk space)
-      ansible.builtin.command:
-        cmd: df -h
-      delegate_to: "{{ ansible_host }}"  # This will run the command on the remote VM
-      register: df_result  # Capture the result for verification
-
-    - name: Show disk space output from remote VM
-      debug:
-        msg: "Disk space on the remote VM: {{ df_result.stdout }}"
+        msg: "{{ result.stdout }}"
