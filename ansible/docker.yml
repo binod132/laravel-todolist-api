@@ -1,20 +1,28 @@
 ---
 - name: Install Docker and Docker Compose on remote Ubuntu VM
-  hosts: all
+  hosts: localhost  # Run the playbook locally, but target the remote host
   become: yes
   gather_facts: yes
   vars:
-    ansible_host: 192.168.130.108  # Replace with the IP or hostname of your VM
-    ansible_user: ubuntu                  # Replace with your remote username
-    ansible_ssh_pass: ubuntu       # Replace with your SSH password
+    remote_host: 192.168.130.108  # IP of the remote Ubuntu VM
+    remote_user: ubuntu           # Username of the remote Ubuntu VM
+    remote_password: ubuntu       # SSH password for the remote Ubuntu VM
 
   tasks:
+    - name: Set up connection to remote host
+      set_fact:
+        ansible_host: "{{ remote_host }}"
+        ansible_user: "{{ remote_user }}"
+        ansible_ssh_pass: "{{ remote_password }}"
+      delegate_to: localhost
+
     - name: Update apt package index
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
+      delegate_to: "{{ ansible_host }}"
 
     - name: Install prerequisites
-      apt:
+      ansible.builtin.apt:
         name: "{{ item }}"
         state: present
       loop:
@@ -22,46 +30,54 @@
         - ca-certificates
         - curl
         - software-properties-common
+      delegate_to: "{{ ansible_host }}"
 
     - name: Add Docker’s official GPG key
-      apt_key:
+      ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+      delegate_to: "{{ ansible_host }}"
 
     - name: Set up Docker stable repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_facts['lsb']['codename'] }} stable"
         state: present
         filename: docker
+      delegate_to: "{{ ansible_host }}"
 
     - name: Install Docker
-      apt:
+      ansible.builtin.apt:
         name: docker-ce
         state: present
         update_cache: yes
+      delegate_to: "{{ ansible_host }}"
 
     - name: Start and enable Docker service
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         enabled: yes
         state: started
+      delegate_to: "{{ ansible_host }}"
 
     - name: Install Docker Compose
-      get_url:
+      ansible.builtin.get_url:
         url: https://github.com/docker/compose/releases/download/v2.1.1/docker-compose-`uname -s`-`uname -m`
         dest: /usr/local/bin/docker-compose
         mode: '0755'
+      delegate_to: "{{ ansible_host }}"
 
     - name: Verify Docker installation
-      command: docker --version
+      ansible.builtin.command: docker --version
       register: docker_version_output
+      delegate_to: "{{ ansible_host }}"
 
     - name: Verify Docker Compose installation
-      command: docker-compose --version
+      ansible.builtin.command: docker-compose --version
       register: docker_compose_version_output
+      delegate_to: "{{ ansible_host }}"
 
     - name: Display Docker and Docker Compose versions
-      debug:
+      ansible.builtin.debug:
         msg:
           - "Docker version: {{ docker_version_output.stdout }}"
           - "Docker Compose version: {{ docker_compose_version_output.stdout }}"
