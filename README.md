@@ -129,7 +129,7 @@ Content-Type: application/json
   "password_confirmation": "password"
 }
 ```
-![Example Image](screenshots/1.png)
+![Register](screenshots/1.png)
 #### 2. Login
 
 **Request:**
@@ -143,7 +143,7 @@ Content-Type: application/json
   "password": "password"
 }
 ```
-
+![Login](screenshots/2.png)
 #### 3. Create To-Do Item
 
 **Request:**
@@ -159,7 +159,7 @@ Content-Type: application/json
   "completed": "0"
 }
 ```
-
+![Creat Todo](screenshots/3.png)
 #### 4. List To-Do Items
 
 **Request:**
@@ -169,7 +169,7 @@ GET https://laravel-todolist-api.test/api/todo
 Authorization: Bearer YOUR_ACCESS_TOKEN
 Content-Type: application/json
 ```
-
+![List Todo](screenshots/4.png)
 #### 5. To-Do Item Detail
 
 **Request:**
@@ -183,7 +183,7 @@ Content-Type: application/json
   "completed": 1
 }
 ```
-
+![To-Do Item Detail](screenshots/5.png)
 #### 6. Update To-Do Item
 
 **Request:**
@@ -199,7 +199,7 @@ Content-Type: application/json
   "completed": "1"
 }
 ```
-
+![Update To-Do Item](screenshots/6.png)
 #### 7. Delete To-Do Item
 
 **Request:**
@@ -209,32 +209,4 @@ DELETE https://laravel-todolist-api.test/api/todo/1
 Authorization: Bearer YOUR_ACCESS_TOKEN
 Content-Type: application/json
 ```
-
----
-
-Replace `YOUR_ACCESS_TOKEN` with the actual token obtained during login for authorization.
-
------------------------------------
-Steps:
-Docker and Docker Compose installation
-````
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-```
-```
-sudo apt-get install docker-ce
-```
-Install Docker Compose
-```sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-```
-```sudo chmod +x /usr/local/bin/docker-compose
-```
+![Delete To-Do Item](screenshots/7.png)
