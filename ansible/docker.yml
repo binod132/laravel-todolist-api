@@ -1,21 +1,26 @@
 ---
-- name: SSH Connection via sshpass to remote Ubuntu VM
+- name: SSH and Docker installation on remote Ubuntu VM
   hosts: localhost
   gather_facts: no
   vars:
     ssh_password: "ubuntu"
     ssh_user: "ubuntu"
     remote_host: "192.168.130.108"
-    hostname: "test"
   tasks:
-    - name: Set up SSH connection using sshpass
-      ansible.builtin.command:
-        cmd: "sshpass -p 'ubuntu' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@192.168.130.108"
-      environment:
-        SSH_ASKPASS: /usr/bin/ssh-askpass
-      register: ssh_output
-      delegate_to: localhost
+    - name: Set up SSH connection using sshpass and install Docker
+      ansible.builtin.shell: |
+        sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} << 'EOF'
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        EOF
+      register: docker_install_output
 
-    - name: Print SSH connection result
+    - name: Print Docker installation output
       debug:
-        var: ssh_output.stdout
+        var: docker_install_output.stdout
