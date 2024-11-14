@@ -10,7 +10,7 @@
   tasks:
     - name: Set up SSH connection using sshpass
       ansible.builtin.command:
-        cmd: "sshpass -p 'ubuntu' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@192.168.130.108 'hostname'"
+        cmd: "sshpass -p 'ubuntu' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@192.168.130.108"
       environment:
         SSH_ASKPASS: /usr/bin/ssh-askpass
       register: ssh_output
