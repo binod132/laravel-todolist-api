@@ -26,7 +26,7 @@ data "vsphere_network" "network" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = "ubuntu-vm"  # Name for the VM
+  name             = "test"  # Name for the VM
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = 2  # Set number of CPUs
