@@ -24,4 +24,24 @@
 
     - name: Add Docker repository on remote host
       ansible.builtin.command:
-        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null'"
+      register: repo_output
+
+    - name: Update apt-get again after adding Docker repo
+      ansible.builtin.command:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'echo {{ ssh_password }} | sudo -S apt-get update'"
+      register: docker_update_output
+
+    - name: Install Docker on remote host
+      ansible.builtin.command:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'echo {{ ssh_password }} | sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io'"
+      register: docker_install_output
+
+    - name: Start and enable Docker service on remote host
+      ansible.builtin.command:
+        cmd: "sshpass -p '{{ ssh_password }}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ ssh_user }}@{{ remote_host }} 'echo {{ ssh_password }} | sudo -S systemctl start docker && sudo systemctl enable docker'"
+      register: docker_service_output
+
+    - name: Print Docker installation result
+      debug:
+        var: docker_install
