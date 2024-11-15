@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - main  # Trigger on push to 'dev' branch or change this to your branch
+      - dev  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
@@ -13,6 +13,21 @@ jobs:
       # Step 1: Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
+      
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Clear Composer cache
+        run: composer clear-cache
+
+      - name: Install dependencies
+        run: composer install --no-scripts --no-interaction --prefer-dist
+
+      - name: Lint code with PHP_CodeSniffer
+        run: ./vendor/bin/phpcs --standard=PSR12 app/
+        continue-on-error: true
       # Step 2: Log in to Docker registry
       - name: Docker Login
         run: |
