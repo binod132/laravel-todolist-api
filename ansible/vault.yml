@@ -1,7 +1,7 @@
 ---
 - name: Install and configure HashiCorp Vault on Ubuntu
   hosts: localhost
-  gather_facts: no
+  become: yes
   vars:
     vault_version: "1.14.3"
     vault_bin_path: "/usr/local/bin/vault"
