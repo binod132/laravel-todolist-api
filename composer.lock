@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
     "content-hash": "6df267924af24e40a528b142b97651c0",
     "packages": [
         {
@@ -160,11 +159,6 @@
             "time": "2024-11-15T01:53:30+00:00"
         },
         {
-=======
-    "content-hash": "691885cdfecf4fc3f888f9f7d25e4302",
-    "packages": [
-        {
->>>>>>> origin/hvault
             "name": "brick/math",
             "version": "0.12.1",
             "source": {
@@ -294,7 +288,6 @@
             "time": "2024-02-09T16:56:22+00:00"
         },
         {
-<<<<<<< HEAD
             "name": "csharpru/vault-php",
             "version": "4.4.0",
             "source": {
@@ -358,8 +351,6 @@
             "time": "2023-11-22T11:38:41+00:00"
         },
         {
-=======
->>>>>>> origin/hvault
             "name": "dflydev/dot-access-data",
             "version": "v3.0.3",
             "source": {
@@ -2757,7 +2748,6 @@
             "time": "2024-07-20T21:41:07+00:00"
         },
         {
-<<<<<<< HEAD
             "name": "psr/cache",
             "version": "3.0.0",
             "source": {
@@ -2807,8 +2797,6 @@
             "time": "2021-02-03T23:26:27+00:00"
         },
         {
-=======
->>>>>>> origin/hvault
             "name": "psr/clock",
             "version": "1.0.0",
             "source": {
