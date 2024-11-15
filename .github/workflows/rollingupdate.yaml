@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - main  # Trigger on push to 'dev' branch or change this to your branch
+      - rollingupdate  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
@@ -56,10 +56,10 @@ jobs:
             cd /home/ubuntu/project/laravel-todolist-api
 
             # Perform git pull to fetch the latest changes
-            git pull origin dev
+            git pull origin rollingupdate
 
             # Checkout to the dev branch
-            git checkout dev
+            git checkout rollingupdate
 
             # List the contents of the directory to confirm we're in the right place
             ls -al
@@ -69,12 +69,25 @@ jobs:
 
             # Run docker-compose up in detached mode
             ls -l | grep Dockerfile.app
-            # Check build
-            echo "docker compose up ............."
-            #docker compose down -v --remove-orphans
-            docker compose down
-            VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d
+            # Database Migration
+            echo "Running database migration..."
+            docker compose exec todo-app-1 php artisan migrate --force
 
+            # Update todo-app-1 and 2
+            docker compose stop todo-app
+            VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d todo-app-1
+            sleep 10
+            docker ps | grep todo-app-1
+            echo "Updating todo-app-2..."
+            #docker compose stop todo-app-2
+            VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d todo-app-2
+            sleep 10
+            docker ps | grep todo-app-2
+            # # Check build
+            # echo "docker compose up ............."
+            # #docker compose down -v --remove-orphans
+            # docker compose down
+            # VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d
             # Optional: Verify the status of the Docker containers
             docker ps
           EOF
