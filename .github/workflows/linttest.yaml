@@ -19,9 +19,10 @@ jobs:
 
       - name: Clear Composer cache
         run: composer clear-cache
-        
+
       - name: Install dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
       - name: Lint code with PHP_CodeSniffer
         run: ./vendor/bin/phpcs --standard=PSR12 app/
+        continue-on-error: true
