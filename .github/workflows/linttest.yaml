@@ -17,6 +17,9 @@ jobs:
         with:
           php-version: '8.2'
 
+      - name: Clear Composer cache
+        run: composer clear-cache
+        
       - name: Install dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
