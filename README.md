@@ -53,7 +53,7 @@
    **Enhanced environment/secret variable management using a secret manager.**
 
 
-   - git repositiry secret: I have used github repository secret. For DB credentials and other secret we can use open-source vaults like Hashicorp Vault
+   - git repository secret: I have used github repository secret. For DB credentials and other secret we can use open-source vaults like Hashicorp Vault
    - Harshicorp Vault: I have used Hashicorp Vault to store secret like DB password. I have install vault on VM, created DB password, created VaultService class, and updated database.php to extract DB password from vault using VaultService class.
 
    **Add code linting to the pipeline..**
