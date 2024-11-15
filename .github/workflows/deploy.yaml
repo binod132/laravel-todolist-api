@@ -3,7 +3,11 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
+<<<<<<< HEAD
       - hvault  # Trigger on push to 'dev' branch or change this to your branch
+=======
+      - main  # Trigger on push to 'dev' branch or change this to your branch
+>>>>>>> origin/hvault
 
 jobs:
   deploy:
@@ -40,7 +44,10 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
           SSH_USER: ubuntu  # GitHub secret for the SSH user
           VM_INTERNAL_IP: "192.168.130.254"  # GitHub secret for the VM's internal IP
+<<<<<<< HEAD
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+=======
+>>>>>>> origin/hvault
         run: |
           # Set up SSH agent to use the private key
           mkdir -p ~/.ssh
