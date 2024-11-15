@@ -48,6 +48,17 @@
    - I have used ansible to automate dependencies installation including docker and docker compose. Please refer to ansible/docker.yml [30min]
 6. **Documentation** [1hr]
 
+## Bonus Tasks (Optional):
+
+   **Enhanced environment/secret variable management using a secret manager.**
+
+
+   I have used github repository secret. For DB credentials and other secret we can use open-source vaults like Hashicorp Vault
+
+   **Add code linting to the pipeline..**
+
+   I have used php_codesniffer to test code quality on CICD pipeline. We cant stop build process if code test is below defined threshold.
+
 
 
 # Laravel To-Do List API.
