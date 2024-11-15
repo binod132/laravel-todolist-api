@@ -57,7 +57,7 @@
 
    **Add code linting to the pipeline..**
 
-   I have used php_codesniffer to test code quality on CICD pipeline. We cant stop build process if code test is below defined threshold.
+   I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
 
 
