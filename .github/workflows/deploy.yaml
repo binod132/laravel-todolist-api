@@ -40,6 +40,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
           SSH_USER: ubuntu  # GitHub secret for the SSH user
           VM_INTERNAL_IP: "192.168.130.254"  # GitHub secret for the VM's internal IP
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         run: |
           # Set up SSH agent to use the private key
           mkdir -p ~/.ssh
@@ -72,7 +73,7 @@ jobs:
             echo "docker compose up ............."
             #docker compose down -v --remove-orphans
             docker compose down
-            docker compose up --build -d
+            VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d
 
             # Optional: Verify the status of the Docker containers
             docker ps
