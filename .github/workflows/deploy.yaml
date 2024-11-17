@@ -48,7 +48,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           # Add the VM to known hosts to avoid SSH prompts
           ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
-          # SSH into the VM and perform actions
+          ## SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << EOF
             export VAULT_TOKEN=$VAULT_TOKEN
             cd /home/ubuntu/project/laravel-todolist-api
