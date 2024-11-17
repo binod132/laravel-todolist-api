@@ -62,7 +62,6 @@ jobs:
               echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
             fi
             cat .env.example
-            pwd
             docker compose down
             docker compose up --build -d
             docker ps
