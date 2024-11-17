@@ -2,7 +2,7 @@ version: '3'
 services:
   # PHP Service
   todo-app-1:
-    #image: todo-app
+    image: todo-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,10 +21,10 @@ services:
 
   # PHP Service - Instance 2 (For rolling updates)
   todo-app-2:
-    #image: todo-app
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: todo-app
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     user: www-todo
     container_name: todo-app-2
     tty: true
