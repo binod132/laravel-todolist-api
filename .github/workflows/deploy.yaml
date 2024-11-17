@@ -53,7 +53,6 @@ jobs:
 
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            echo $Test
             # Navigate to the project directory
             cd /home/ubuntu/project/laravel-todolist-api
 
@@ -63,6 +62,7 @@ jobs:
             # Checkout to the dev branch
             git checkout hvault
 
+            echo $Test
             # List the contents of the directory to confirm we're in the right place
             ls -al
 
