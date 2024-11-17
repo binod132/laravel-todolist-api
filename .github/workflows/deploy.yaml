@@ -63,8 +63,10 @@ jobs:
             fi
             cat .env.example
             docker compose stop todo-app-1
+            docker rm todo-app-1
             docker compose up --build -d todo-app-1
             sleep 10
             docker compose stop todo-app-2
+            docker rm todo-app-2
             docker compose up --build -d todo-app-2
           EOF
