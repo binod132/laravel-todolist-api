@@ -40,7 +40,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH }}  # GitHub secret for the private SSH key
           SSH_USER: ubuntu  # GitHub secret for the SSH user
           VM_INTERNAL_IP: "192.168.130.254"  # GitHub secret for the VM's internal IP
-          #VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         run: |
           # Set up SSH agent to use the private key
           mkdir -p ~/.ssh
@@ -49,11 +49,13 @@ jobs:
           # Add the VM to known hosts to avoid SSH prompts
           ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
           # SSH into the VM and perform actions
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << EOF
+            export VAULT_TOKEN=$VAULT_TOKEN
             cd /home/ubuntu/project/laravel-todolist-api
             git pull origin hvault
             git checkout hvault
-            echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
+            echo "VAULT_TOKEN inside VM: \$VAULT_TOKEN"
+            echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
             cat .env.example
             # echo "docker compose up ............."
             # docker compose down
