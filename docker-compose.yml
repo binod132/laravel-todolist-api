@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     user: www-todo
-    container_name: todo-app-2
+    container_name: todo-app-1
     tty: true
     environment:
       SERVICE_NAME: todo-app
