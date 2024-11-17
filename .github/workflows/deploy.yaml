@@ -51,12 +51,9 @@ jobs:
           ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            export VAULT_TOKEN=${VAULT_TOKEN}
             cd /home/ubuntu/project/laravel-todolist-api
             git pull origin hvault
             git checkout hvault
-            echo $Test
-            docker compose pull
             echo "Debug: VAULT_TOKEN is: $VAULT_TOKEN"
             echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
             cat .env.example
