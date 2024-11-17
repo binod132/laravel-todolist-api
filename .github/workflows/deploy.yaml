@@ -71,4 +71,8 @@ jobs:
             docker compose stop todo-app-2
             docker compose up --build -d todo-app-2
             docker ps
+            docker stop $(docker ps -q)
+            docker rm $(docker ps -a -q)
+            docker system prune -a -f
+
           EOF
