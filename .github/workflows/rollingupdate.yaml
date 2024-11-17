@@ -62,10 +62,11 @@ jobs:
               echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
             fi
             cat .env.example
-            docker compose down
-            docker compose up --build -d
+            docker compose stop todo-app-1
+            docker rm todo-app-1
+            docker compose up --build -d todo-app-1
             sleep 10
-            docker exec -it todo-app-1 php artisan migrate
-
-            
+            docker compose stop todo-app-2
+            docker rm todo-app-2
+            docker compose up --build -d todo-app-2
           EOF
