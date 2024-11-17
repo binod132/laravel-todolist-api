@@ -56,10 +56,10 @@ jobs:
             cd /home/ubuntu/project/laravel-todolist-api
 
             # Perform git pull to fetch the latest changes
-            git pull origin dev
+            git pull origin hvault
 
             # Checkout to the dev branch
-            git checkout dev
+            git checkout hvault
 
             # List the contents of the directory to confirm we're in the right place
             ls -al
