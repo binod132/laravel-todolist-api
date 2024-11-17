@@ -41,6 +41,7 @@ jobs:
           SSH_USER: ubuntu  # GitHub secret for the SSH user
           VM_INTERNAL_IP: "192.168.130.254"  # GitHub secret for the VM's internal IP
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          Test: "test env"
         run: |
           # Set up SSH agent to use the private key
           mkdir -p ~/.ssh
@@ -52,6 +53,7 @@ jobs:
 
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
+            echo $Test
             # Navigate to the project directory
             cd /home/ubuntu/project/laravel-todolist-api
 
