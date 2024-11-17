@@ -9,7 +9,8 @@
         "csharpru/vault-php": "^4.4",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "laminas/laminas-stdlib": "^3.18.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
