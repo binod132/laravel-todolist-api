@@ -1,10 +1,7 @@
-<?php
-
 namespace App\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Facades\Log;
 
 class VaultService
 {
@@ -39,21 +36,12 @@ class VaultService
             // Return the password
             return $data['data']['data']['password'] ?? null;
         } catch (RequestException $e) {
-            // Log the error with full Vault URL, token, and specific failure details
-            Log::error('Vault request failed', [
-                'vault_url' => $this->vaultUrl,
-                'vault_token' => $this->vaultToken,
-                'error_message' => $e->getMessage(),
-                'request_uri' => '/v1/secret/data/db_password',
-            ]);
-
-            // Optionally, you can also include the full exception details for debugging purposes
-            Log::error('Exception details', [
-                'exception' => $e->getTraceAsString(),
-            ]);
-
-            // Return a custom message or null based on your needs
-            return 'Failed to retrieve DB password from Vault.';
+            // Print error message if the request fails
+            echo "Failed to get DB password from Vault.\n";
+            echo "Error message: " . $e->getMessage() . "\n";
+            echo "Vault URL: " . $this->vaultUrl . "\n";
+            echo "Vault Token: " . $this->vaultToken . "\n";
+            return null;
         }
     }
 }
