@@ -54,6 +54,7 @@ jobs:
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
             # Navigate to the project directory
+            export VAULT_TOKEN=$VAULT_TOKEN
             cd /home/ubuntu/project/laravel-todolist-api
 
             # Perform git pull to fetch the latest changes
