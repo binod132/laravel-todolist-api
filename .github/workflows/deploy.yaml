@@ -54,8 +54,13 @@ jobs:
             cd /home/ubuntu/project/laravel-todolist-api
             git pull origin hvault
             git checkout hvault
-            echo "VAULT_TOKEN inside VM: \$VAULT_TOKEN"
-            echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
+            # echo "VAULT_TOKEN inside VM: \$VAULT_TOKEN"
+            # echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
+            if grep -q "^VAULT_TOKEN=" .env.example; then
+              sed -i "s/^VAULT_TOKEN=.*/VAULT_TOKEN=\$VAULT_TOKEN/" .env.example
+            else
+              echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
+            fi
             cat .env.example
             # echo "docker compose up ............."
             # docker compose down
