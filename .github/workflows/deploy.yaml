@@ -53,31 +53,16 @@ jobs:
 
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
-            # Navigate to the project directory
             export VAULT_TOKEN=${VAULT_TOKEN}
             cd /home/ubuntu/project/laravel-todolist-api
-
-            # Perform git pull to fetch the latest changes
             git pull origin hvault
-
-            # Checkout to the dev branch
             git checkout hvault
-
             echo $Test
-            # List the contents of the directory to confirm we're in the right place
-            ls -al
-
-            # Pull the latest Docker images
             docker compose pull
-            echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
-            # Run docker-compose up in detached mode
-            ls -l | grep Dockerfile.app
-            # Check build
-            echo "docker compose up ............."
-            #docker compose down -v --remove-orphans
-            docker compose down
-            docker compose up --build -d
-
-            # Optional: Verify the status of the Docker containers
-            docker ps
+            echo "Debug: VAULT_TOKEN is: $VAULT_TOKEN"
+            # echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
+            # echo "docker compose up ............."
+            # docker compose down
+            # docker compose up --build -d
+            # docker ps
           EOF
