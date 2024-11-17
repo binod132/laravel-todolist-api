@@ -65,7 +65,7 @@ jobs:
             docker compose down
             docker compose up --build -d
             sleep 10
-            docker exec -it todo-app-1 php artisan migrate
+            docker exec todo-app-1 php artisan migrate
 
             
           EOF
