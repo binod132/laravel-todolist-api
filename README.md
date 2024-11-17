@@ -1,5 +1,5 @@
 ## Answer/Solutions:
-### For local development
+### For local development.
 1. **Dockerize the Application: Create a Docker Compose file to set up the application for local development. Do not use pre-built solutions like Sail or Larasail.**
 
 
