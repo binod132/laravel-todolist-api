@@ -11,12 +11,16 @@ class VaultService
     protected $vaultUrl;
     protected $vaultToken;
 
-    public function __construct()
+    public function __construct($vaultUrl = null, $vaultToken = null)
     {
         // Vault base URL and token from environment variables
         $this->vaultUrl = env('VAULT_ADDR');
         $this->vaultToken = env('VAULT_TOKEN');
-        
+        if (empty($this->vaultToken)) {
+            echo "Vault token is empty! Please check the .env file.\n";
+        } else {
+            echo "Vault token is: found\n";
+        }        
         // Create a Guzzle client
         $this->client = new Client([
             'base_uri' => $this->vaultUrl,
