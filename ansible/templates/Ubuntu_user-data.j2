@@ -1,0 +1,16 @@
+users:
+  - name: {{ ubuntuosuser }}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: sudo
+    ssh-authorized-keys:
+      - {{ ssh_key }}
+
+packages:
+  - git
+  - curl
+  - vim
+  - build-essential
+
+runcmd:
+  - echo "Hello, Ubuntu!"

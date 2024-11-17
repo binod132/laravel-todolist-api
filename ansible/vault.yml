@@ -1,0 +1,75 @@
+---
+- name: Install and configure HashiCorp Vault on Ubuntu
+  hosts: localhost
+  become: yes
+  vars:
+    vault_version: "1.14.3"
+    vault_bin_path: "/usr/local/bin/vault"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install dependencies
+      apt:
+        name:
+          - unzip
+          - wget
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Download HashiCorp Vault
+      get_url:
+        url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+        dest: "/tmp/vault_{{ vault_version }}_linux_amd64.zip"
+        mode: '0644'
+
+    - name: Unzip Vault binary
+      unarchive:
+        src: "/tmp/vault_{{ vault_version }}_linux_amd64.zip"
+        dest: "/usr/local/bin/"
+        remote_src: yes
+        creates: "{{ vault_bin_path }}"
+
+    - name: Verify Vault installation
+      command: vault --version
+      register: vault_version_output
+      failed_when: vault_version_output.rc != 0
+
+    - name: Enable Vault systemd service
+      copy:
+        content: |
+          [Unit]
+          Description=HashiCorp Vault
+          Documentation=https://www.vaultproject.io/docs
+
+          [Service]
+          User=root
+          ExecStart=/usr/local/bin/vault server -dev
+          ExecReload=/bin/kill -HUP $MAINPID
+          KillMode=process
+          KillSignal=SIGINT
+          Restart=on-failure
+          LimitNOFILE=65536
+          LimitNPROC=4096
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: "/etc/systemd/system/vault.service"
+        mode: '0644'
+
+    - name: Reload systemd to register Vault service
+      systemd:
+        daemon_reload: yes
+
+    - name: Start and enable Vault service
+      systemd:
+        name: vault
+        state: started
+        enabled: yes
+
+    - name: Display Vault version
+      debug:
+        var: vault_version_output.stdout

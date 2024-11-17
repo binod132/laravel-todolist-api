@@ -1,0 +1,249 @@
+---
+- hosts: localhost
+  name: DeployUbuntu.yml
+  gather_facts: false
+  vars:
+    workingdir: "{{ lookup('env','HOME') }}/ubuntu-autoinstall"   # Temp directory on the Ansible Controller
+    ubuntuiso: ubuntu-22.04.5-live-server-amd64.iso               # Ubuntu ISO filename
+    #ubuntuiso_url: http://old-releases.ubuntu.com/releases/20.04/ # Ubuntu ISO URL
+    ubuntuiso_url: https://releases.ubuntu.com/jammy/ubuntu-22.04.5-live-server-amd64.iso
+    ubuntunewiso: ubuntu.iso                                      # Ubuntu custom ISO name
+    vcenterserver: "192.168.130.210"                             # vCenter FQDN
+    vcenteruser: "root"                    # vCenter username
+    vcenterpassword: "Mid@s123"                                  # vCenter password
+    datacenter: "ha-datacenter"                                             # vCenter datacenter
+    vspherecluster: ""                                   # vCenter cluster
+    vmfolder: ""                                                   # vCenter VM folder
+    datastore: "datastore1"                                         # vSphere datastore
+    datastoredir: /ISO                                            # vSphere datastore ISO directory
+    ubuntuvmname: test                                   # Ubuntu VM name of the virtual machine
+    ubuntuvmdisksize: 50                                          # Ubuntu VM disksize in gigabytes
+    ubuntuvmmemorysize: 4048                                      # Ubuntu VM memory size in megabytes
+    ubuntuvvmcpus: 3                                              # Ubuntu VM number of CPUs
+    ubuntuvmcpucores: 3                                           # Ubuntu VM number of cores
+    ubuntuvmportgroup: 0                                   # Ubuntu VM vSphere portgroup
+    ubuntuoslocale: en_US                                         # Ubuntu OS locale
+    ubuntuoskeyboardlayout: en                                    # Ubuntu OS keyboard layout
+    ubuntuoskeyboardvariant: us                                   # Ubuntu OS keyboard variant
+    ubuntuosipv4address: 192.168.130.254/24                           # Ubuntu OS IPv4 address
+    ubuntuosipv4gateway: 192.168.130.1                               # Ubuntu OS IPv4 gateway
+    ubuntuosipv4dns: 8.8.8.8                                   # Ubuntu OS DNS server
+    ubuntuossearchdomain: ""                               # Ubuntu OS DNS search domain
+    ubuntuoshostname: test                             # Ubuntu OS hostname
+    ubuntuosuser: ubuntu                                          # Ubuntu OS username
+    ubuntuospassword: ubuntu                                    # Ubuntu OS password
+    ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPvCyzw+5v8CqqY0nexodZt+njThMZjJkHFGPBBRy63v1FHCAc8LI5V9/D1oTJjrA8CiXG2slinic8aZmgCGdck0z8gOxV1n4q1E9XkIi28G7KbElSRaS87ez+MmXlSnhqSe07B3lwX6wGEK0n13EewRoNrzatAd13jVNRhviBkROraeEz9JIkeK0aYj1hN2lNYDBHGivfKqxZLS8PTFD/dTPiIW3pG67mlAwIS0adwvdx9UagK+kDn8IpqA7HgE1Dn+fOQHBLE0BFj9DitOMlJZJ/bn5wAdEILI2kqXM6+nbqSgfGL7n6OeSfMfmipcjXHiWCBuuj81JbYUUK4+EeHHLFF7CIEKZViiegSpqIlQg1bhgSjQmTuTVC/K3NEdQi6o93zoC2KKXYFWw5FeVic4iwiLJVA1elgRAqp9uFRZOIS6ZNZWkaMece+S/98/UtOZQ+FSY4tvfVgeSk2v3sePcu2SEzMEFJ179MWufVdLUcoMetu9Yg6DZCtGWoEPk= ubuntu@Binods-MacBook-Pro-2.local
+ 
+  tasks:
+    - name: Create working directory on Ansible Controller
+      ansible.builtin.file:
+        path: "{{ workingdir }}"
+        state: directory
+        mode: "755"
+ 
+ 
+    - name: Check if ubuntu ISO exists locally on Ansible Controller
+      ansible.builtin.stat:
+        path: "{{ workingdir }}/{{ ubuntuiso }}"
+      register: installerfilecheck
+ 
+ 
+    - name: Download ubuntu ISO (if ISO file doesn't exist locally)
+      ansible.builtin.get_url:
+        url: "{{ ubuntuiso_url }}{{ ubuntuiso }}"
+        dest: "{{ workingdir }}/{{ ubuntuiso }}"
+        mode: "755"
+      when:
+        - not installerfilecheck.stat.exists
+ 
+ 
+    - name: Extract Ubuntu ISO
+      ansible.builtin.command: "xorriso -osirrox on -indev {{ workingdir }}/{{ ubuntuiso }} \
+                               -extract / {{ workingdir }}/iso"
+      changed_when: false
+ 
+ 
+    - name: Add write permission to extracted files
+      ansible.builtin.command: "chmod -R +w {{ workingdir }}/iso"    # Using chmod as Ansible (Python) can't handle the recursion depth on the Ubuntu ISO
+      changed_when: false
+ 
+ 
+## Start workaround issue with Ubuntu autoinstall
+## Details of the issue and the workaround: https://askubuntu.com/questions/1394441/ubuntu-20-04-3-autoinstall-with-embedded-user-data-crashing-i-got-workaround
+ 
+    - name: Extract the Packages.gz file on Ubuntu ISO
+      ansible.builtin.command: "gunzip -f {{ workingdir }}/iso/dists/jammy/main/binary-amd64/Packages.gz --keep"
+      changed_when: false
+ 
+## End workaround issue with Ubuntu autoinstall
+ 
+ 
+    - name: Copy txt.cfg from ubuntu ISO
+      ansible.builtin.copy:
+        src: "{{ workingdir }}/iso/boot/grub/grub.cfg"
+        dest: "{{ workingdir }}/isocopy/boot/"
+        mode: "775"
+ 
+ 
+    - name: Edit grub.cfg to modify append line
+      ansible.builtin.replace:
+        dest: "{{ workingdir }}/isocopy/boot/grub.cfg"
+        regexp: 'append   initrd=/casper/initrd quiet  ---'
+        replace: 'append   initrd=/casper/initrd quiet --- autoinstall ds=nocloud;s=/cdrom/autoinstall/'
+ 
+ 
+    - name: Create directory to store user-data and meta-data
+      ansible.builtin.file:
+        path: "{{ workingdir }}/isocopy/autoinstall"
+        state: directory
+        mode: "755"
+ 
+ 
+    - name: Copy user-data file to directory
+      ansible.builtin.template:
+        src: ./Ubuntu_user-data.j2
+        dest: "{{ workingdir }}/isocopy/autoinstall/user-data"
+        mode: "755"
+ 
+ 
+    - name: Create empty meta-data file in directory
+      ansible.builtin.file:
+        path: "{{ workingdir }}/isocopy/autoinstall/meta-data"
+        state: touch
+        mode: "755"
+ 
+ 
+    - name: Create custom ubuntu ISO
+      ansible.builtin.command: "xorrisofs -relaxed-filenames -J -R -o {{ workingdir }}/{{ ubuntunewiso }} \
+                                -b EFI/boot/bootx64.efi -c boot/grub/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table \
+                                {{ workingdir }}/iso/ {{ workingdir }}/isocopy/"
+      args:
+        chdir: "{{ workingdir }}/isocopy/"
+      changed_when: false
+ 
+ 
+    - name: Upload the custom ubuntu ISO to the vSphere datastore
+      community.vmware.vsphere_copy:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        datacenter: "{{ datacenter }}"
+        src: "{{ workingdir }}/{{ ubuntunewiso }}"
+        datastore: "{{ datastore }}"
+        path: "{{ datastoredir }}/{{ ubuntunewiso }}"
+ 
+ 
+    - name: Deploy ubuntu VM
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        name: "{{ ubuntuvmname }}"
+        state: poweredon
+        guest_id: ubuntu64Guest
+        cluster: "{{ vspherecluster }}"
+        datacenter: "{{ datacenter }}"
+        folder: "{{ vmfolder }}"
+        disk:
+          - size_gb: "{{ ubuntuvmdisksize }}"
+            type: thin
+            datastore: "{{ datastore }}"
+        hardware:
+          memory_mb: "{{ ubuntuvmmemorysize }}"
+          num_cpus: "{{ ubuntuvvmcpus }}"
+          num_cpu_cores_per_socket: "{{ ubuntuvmcpucores }}"
+          scsi: paravirtual
+        networks:
+          - name: "VM Network"
+            device_type: vmxnet3
+        cdrom:
+          - controller_number: 0
+            unit_number: 0
+            type: iso
+            iso_path: "[{{ datastore }}] {{ datastoredir }}/{{ ubuntunewiso }}"
+            state: present
+        annotation: |
+                    *** Auto-Deployed by Ansible ***
+                    Username: {{ ubuntuosuser }}
+                    Password: {{ ubuntuospassword }}
+ 
+ 
+    - name: Start checking if the ubuntu VM is ready
+      community.vmware.vmware_guest_info:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        datacenter: "{{ datacenter }}"
+        validate_certs: false
+        name: "{{ ubuntuvmname }}"
+        schema: vsphere
+      register: vm_facts
+      until: vm_facts.instance.guest.hostName is search(ubuntuoshostname)
+ 
+ 
+    - name: Set password for the ubuntu user
+      community.vmware.vmware_vm_shell:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        vm_id: "{{ ubuntuvmname }}"
+        vm_username: "{{ ubuntuosuser }}"
+        vm_password: VMware1!
+        vm_shell: /usr/bin/echo
+        vm_shell_args: "'{{ ubuntuosuser }}:{{ ubuntuospassword }}' | sudo chpasswd"
+ 
+ 
+    - name: Copy network configuration file to working directory
+      ansible.builtin.template:
+        src: ./templates/ubuntu_Netplan.j2
+        dest: "{{ workingdir }}/00-installer-config.yaml"
+        mode: "755"
+ 
+ 
+    - name: Copy network configuration file to ubuntu VM
+      community.vmware.vmware_guest_file_operation:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        vm_id: "{{ ubuntuvmname }}"
+        vm_username: "{{ ubuntuosuser }}"
+        vm_password: VMware1!
+        copy:
+          src: "{{ workingdir }}/00-installer-config.yaml"
+          dest: "/home/{{ ubuntuosuser }}/00-installer-config.yaml"
+ 
+ 
+    - name: Move network configuration file to right location on ubuntu VM
+      community.vmware.vmware_vm_shell:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        vm_id: "{{ ubuntuvmname }}"
+        vm_username: "{{ ubuntuosuser }}"
+        vm_password: VMware1!
+        vm_shell: /usr/bin/sudo
+        vm_shell_args: "mv /home/{{ ubuntuosuser }}/00-installer-config.yaml /etc/netplan/00-installer-config.yaml"
+ 
+ 
+    - name: Appply the network configuration on ubuntu VM
+      community.vmware.vmware_vm_shell:
+        hostname: "{{ vcenterserver }}"
+        username: "{{ vcenteruser }}"
+        password: "{{ vcenterpassword }}"
+        validate_certs: false
+        vm_id: "{{ ubuntuvmname }}"
+        vm_username: "{{ ubuntuosuser }}"
+        vm_password: VMware1!
+        vm_shell: /usr/bin/sudo
+        vm_shell_args: netplan apply
+ 
+ 
+    - name: Delete working directory on Ansible Controller
+      ansible.builtin.file:
+        path: "{{ workingdir }}"
+        state: absent

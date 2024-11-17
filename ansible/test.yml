@@ -1,0 +1,14 @@
+- name: Test requests module in Ansible
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Test requests module
+      ansible.builtin.command: /usr/bin/python3 -c "import requests; print(requests.__version__)"
+      register: test_output
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ test_output.stdout }}"
+
