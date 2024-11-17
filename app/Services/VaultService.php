@@ -4,6 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Log;
 
 class VaultService
 {
@@ -20,7 +21,7 @@ class VaultService
         // Create a Guzzle client
         $this->client = new Client([
             'base_uri' => $this->vaultUrl,
-            'timeout'  => 10.0,
+            'timeout'  => 30.0,
             'headers'  => [
                 'X-Vault-Token' => $this->vaultToken,
             ],
@@ -38,8 +39,21 @@ class VaultService
             // Return the password
             return $data['data']['data']['password'] ?? null;
         } catch (RequestException $e) {
-            // Handle error if request fails
-            return null;
+            // Log the error with full Vault URL, token, and specific failure details
+            Log::error('Vault request failed', [
+                'vault_url' => $this->vaultUrl,
+                'vault_token' => $this->vaultToken,
+                'error_message' => $e->getMessage(),
+                'request_uri' => '/v1/secret/data/db_password',
+            ]);
+
+            // Optionally, you can also include the full exception details for debugging purposes
+            Log::error('Exception details', [
+                'exception' => $e->getTraceAsString(),
+            ]);
+
+            // Return a custom message or null based on your needs
+            return 'Failed to retrieve DB password from Vault.';
         }
     }
 }
