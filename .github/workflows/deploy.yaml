@@ -69,7 +69,7 @@ jobs:
 
             # Pull the latest Docker images
             docker compose pull
-
+            echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
             # Run docker-compose up in detached mode
             ls -l | grep Dockerfile.app
             # Check build
