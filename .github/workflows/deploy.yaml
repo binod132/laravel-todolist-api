@@ -47,10 +47,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
           # Add the VM to known hosts to avoid SSH prompts
           ssh-keyscan -H $VM_INTERNAL_IP >> ~/.ssh/known_hosts
-
           # SSH into the VM and perform actions
           ssh -o StrictHostKeyChecking=no $SSH_USER@$VM_INTERNAL_IP << 'EOF'
             export VAULT_TOKEN=${VAULT_TOKEN}
@@ -60,7 +58,8 @@ jobs:
             echo $Test
             docker compose pull
             echo "Debug: VAULT_TOKEN is: $VAULT_TOKEN"
-            # echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
+            echo "VAULT_TOKEN=$VAULT_TOKEN" >> .env.example
+            cat .env.example
             # echo "docker compose up ............."
             # docker compose down
             # docker compose up --build -d
