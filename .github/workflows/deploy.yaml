@@ -68,10 +68,7 @@ jobs:
             docker compose pull
 
             # Run docker-compose up in detached mode
-            ls -l | grep Dockerfile.app
-            # Check build
             echo "docker compose up ............."
-            #docker compose down -v --remove-orphans
             docker compose down
             VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d
 

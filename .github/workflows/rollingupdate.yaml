@@ -67,19 +67,17 @@ jobs:
             # Pull the latest Docker images
             docker compose pull
 
-            # Run docker-compose up in detached mode
-            ls -l | grep Dockerfile.app
             # Database Migration
             echo "Running database migration..."
-            docker compose exec todo-app-1 php artisan migrate --force
+            #docker compose exec todo-app-1 php artisan migrate --force
 
             # Update todo-app-1 and 2
-            docker compose stop todo-app
+            #docker compose stop todo-app-1
             VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d todo-app-1
             sleep 10
             docker ps | grep todo-app-1
             echo "Updating todo-app-2..."
-            docker compose stop todo-app-2
+            #docker compose stop todo-app-2
             VAULT_TOKEN=${VAULT_TOKEN} docker compose up --build -d todo-app-2
             sleep 10
             docker ps | grep todo-app-2
