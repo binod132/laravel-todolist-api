@@ -72,6 +72,8 @@
    I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
    **Set up a local mail server and an S3-like local server for development.** [1hr]
+   
+   
    Setup local mail server.
    - I have used docker compose to setup mailhog.
    ```
