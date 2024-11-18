@@ -1,5 +1,5 @@
 ## Answer/Solutions:
-### For local development
+### For local development.
 1. **Dockerize the Application: Create a Docker Compose file to set up the application for local development. Do not use pre-built solutions like Sail or Larasail.**
 
 
@@ -56,6 +56,10 @@
    - git repository secret: I have used github repository secret. For DB credentials and other secret we can use open-source vaults like Hashicorp Vault
    - Harshicorp Vault: I have used Hashicorp Vault to store secret like DB password. I have install vault on VM, created DB password, created VaultService class, and updated database.php to extract DB password from vault using VaultService class.
 
+
+   **Implement zero-downtime deployment.**
+   - Rolling Update: I have created rolling update like deployment by creating two containers for todo-app. In workflows/rollingupdate.yaml, during deployment, first todo-app-1 will stop then new todo-app-1 is created and during this traffics are redirected towards todo-app-2.
+
    **Include additional Laravel tools.**
 
    I have add following additional tools.
@@ -66,7 +70,7 @@
 
    I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
-
+------
 
 # Laravel To-Do List API.
 
