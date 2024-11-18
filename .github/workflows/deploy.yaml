@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - hvault  # Trigger on push to 'dev' branch or change this to your branch
+      - main  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
@@ -14,26 +14,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
       
-      # - name: Set up PHP
-      #   uses: shivammathur/setup-php@v2
-      #   with:
-      #     php-version: '8.2'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-      # - name: Clear Composer cache
-      #   run: composer clear-cache
+      - name: Clear Composer cache
+        run: composer clear-cache
 
-      # - name: Install dependencies
-      #   run: composer install --no-scripts --no-interaction --prefer-dist
+      - name: Install dependencies
+        run: composer install --no-scripts --no-interaction --prefer-dist
 
-      # - name: Lint code with PHP_CodeSniffer
-      #   run: ./vendor/bin/phpcs --standard=PSR12 app/
-        # continue-on-error: true
-      # Step 2: Log in to Docker registry
-      # - name: Docker Login
-      #   run: |
-      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin ${{ secrets.DOCKER_REGISTRY }}
-      #     whoami
-      #     docker pull hmis-repo.midashealthservices.com.np/php:8.1
+      - name: Lint code with PHP_CodeSniffer
+        run: ./vendor/bin/phpcs --standard=PSR12 app/
+        continue-on-error: true
+      #Step 2: Log in to Docker registry
+      - name: Docker Login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin ${{ secrets.DOCKER_REGISTRY }}
       # Step 3: SSH into VM, perform git pull, checkout dev, and run Docker Compose
       - name: SSH into VM, git pull, and run Docker Compose
         env:
