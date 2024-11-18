@@ -71,6 +71,144 @@
 
    I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
+   **Set up a local mail server and an S3-like local server for development.**
+   Setup local mail server.
+   - I have used docker compose to setup mailhog.
+   ```
+   version: "3.9"
+   services:
+   mailhog:
+      image: mailhog/mailhog
+      container_name: mailhog
+      ports:
+         - "1025:1025"  # SMTP server
+         - "8025:8025"  # Web UI
+      volumes:
+         - mailhog-data:/data  # Mount a persistent volume
+
+   volumes:
+   mailhog-data:
+      driver: local
+
+   ```
+   Setup Minio-HA (using multinode multidrive)
+   - Install MinIO RPM
+    ```wget https://dl.min.io/server/minio/release/linux-amd64/archive/minio-20240613225353.0.0-1.x86_64.rpm -O minio.rpm
+      sudo dnf install minio.rpm
+    ```
+   - Create a systemd service file and add below contain.
+   ```
+   mkdir -p ~/.config/systemd/user/
+   vi ~/.config/systemd/user/minio-server.service
+   ```
+   ```
+   [Unit]
+   Description=MinIO
+   Documentation=https://min.io/docs/minio/linux/index.html
+   After=network-online.target
+   AssertFileIsExecutable=/usr/local/bin/minio
+
+   [Service]
+   WorkingDirectory=/minio/
+   ProtectProc=invisible
+   EnvironmentFile=/minio/config
+   ExecStart=/usr/local/bin/minio server $MINIO_OPTS $MINIO_VOLUMES
+   Restart=always
+   LimitNOFILE=65536
+   TasksMax=infinity
+   TimeoutStopSec=infinity
+   SendSIGKILL=no
+
+   [Install]
+   WantedBy=default.target
+   ```
+   - Make a configuration file named “/minio/config” and add below contain.
+   ```
+   MINIO_ROOT_USER=<root_user>
+   MINIO_ROOT_PASSWORD=<root_password>
+   MINIO_OPTS="--certs-dir=/minio/certs/ --console-address :9001"
+   MINIO_VOLUMES="https://minio{1...3}.local:9000/minio/data{1...4}"
+   MINIO_BROWSER_REDIRECT_URL=https://miniocluster.local:8000/minio/ui
+   ```
+   - Launch the MinIO instance
+   ```
+   systemctl --user daemon-reload
+   systemctl --user enable --now minio-server
+   ```
+   - Nginx load balancer (LB) deployment; use below nginx configuration for minio.
+   ```
+   upstream minio-cluster-s3 {
+      least_conn;
+      server minio1.local:9000 max_fails=1 fail_timeout=60s;
+      server minio2.local:9000 max_fails=1 fail_timeout=60s;
+      server minio3.local:9000 max_fails=1 fail_timeout=60s;
+   }
+
+   upstream minio-cluster-console {
+      least_conn;
+      server minio1.local:9001 max_fails=1 fail_timeout=60s;
+      server minio2.local:9001 max_fails=1 fail_timeout=60s;
+      server minio3.local:9001 max_fails=1 fail_timeout=60s;
+   }
+
+   server {
+
+      listen 8000 ssl;
+      server_name  miniocluster.local;
+      ssl_certificate         /etc/ssl/certs/nginx.crt;
+      ssl_certificate_key     /etc/ssl/certs/nginx.key;
+
+      # Allow special characters in headers
+      ignore_invalid_headers off;
+      # Allow any size file to be uploaded.
+      # Set to a value such as 1000m; to restrict file size to a specific value
+      client_max_body_size 0;
+      # Disable buffering
+      proxy_buffering off;
+      proxy_request_buffering off;
+
+      location / {
+         proxy_set_header Host $http_host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Proto $scheme;
+
+         proxy_connect_timeout 300;
+         proxy_http_version 1.1;
+         proxy_set_header Connection "";
+         chunked_transfer_encoding off;
+
+         proxy_pass https://minio-cluster-s3; # This uses the upstream directive definition to load balance
+      }
+
+      location /minio/ui/ {
+         rewrite ^/minio/ui/(.*) /$1 break;
+         proxy_set_header Host $http_host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Proto $scheme;
+         proxy_set_header X-NginX-Proxy true;
+
+         # This is necessary to pass the correct IP to be hashed
+         real_ip_header X-Real-IP;
+
+         proxy_connect_timeout 300;
+
+         proxy_http_version 1.1;
+         proxy_set_header Upgrade $http_upgrade;
+         proxy_set_header Connection "upgrade";
+         # Some environments may encounter CORS errors (Kubernetes + Nginx Ingress)
+         # Uncomment the following line to set the Origin request to an empty string
+         # proxy_set_header Origin '';
+
+         chunked_transfer_encoding off;
+
+         proxy_pass https://minio-cluster-console; # This uses the upstream directive definition to load balance
+      }
+   }
+
+   ```
+
 ------
 
 # Laravel To-Do List API.
