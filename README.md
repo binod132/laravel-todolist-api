@@ -84,7 +84,7 @@
          - "1025:1025"  # SMTP server
          - "8025:8025"  # Web UI
       volumes:
-         - mailhog-data:/data  # Mount a persistent volume
+         - mailhog-data:/data
 
    volumes:
    mailhog-data:
