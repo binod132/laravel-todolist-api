@@ -59,6 +59,7 @@
 
    **Implement zero-downtime deployment.**
    - Rolling Update: I have created rolling update like deployment by creating two containers for todo-app. In workflows/rollingupdate.yaml, during deployment, first todo-app-1 will stop then new todo-app-1 is created and during this traffics are redirected towards todo-app-2.
+   - Tag based deployment for production, main branch's workflows/deploy.yaml triggers on create tag and deploy changes to production environment.
 
    **Include additional Laravel tools.**
 
