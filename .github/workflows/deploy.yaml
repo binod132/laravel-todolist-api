@@ -1,9 +1,9 @@
-name: Deploy Application via Docker Compose
+name: Tag based; Deploy Application via Docker Compose
 
 on:
   push:
-    branches:
-      - dev  # Trigger on push to 'dev' branch or change this to your branch
+    tags:
+      - 'v*'  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
