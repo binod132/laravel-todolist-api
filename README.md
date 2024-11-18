@@ -46,32 +46,32 @@
 
    - I have used ansible to provision Linux VM on ESXI, it creates the custom OS, using .vmx file. Please refer to ansible/autoinstall.yml [1hr]
    - I have used ansible to automate dependencies installation including docker and docker compose. Please refer to ansible/docker.yml [30min]
-6. **Documentation** [1hr]
+6. **Documentation** [2hr]
 
 ## Bonus Tasks (Optional):
 
-   **Enhanced environment/secret variable management using a secret manager.**
+   **Enhanced environment/secret variable management using a secret manager.** [2hr]
 
 
    - git repository secret: I have used github repository secret. For DB credentials and other secret we can use open-source vaults like Hashicorp Vault
    - Harshicorp Vault: I have used Hashicorp Vault to store secret like DB password. I have install vault on VM, created DB password, created VaultService class, and updated database.php to extract DB password from vault using VaultService class.
 
 
-   **Implement zero-downtime deployment.**
+   **Implement zero-downtime deployment.** [1hr]
    - Rolling Update: I have created rolling update like deployment by creating two containers for todo-app. In workflows/rollingupdate.yaml, during deployment, first todo-app-1 will stop then new todo-app-1 is created and during this traffics are redirected towards todo-app-2.
    - Tag based deployment for production, main branch's workflows/deploy.yaml triggers on create tag and deploy changes to production environment.
 
-   **Include additional Laravel tools.**
+   **Include additional Laravel tools.** [1hr]
 
    I have add following additional tools.
    - csharpru/vault-php: To manage secrets.
    - squizlabs/php_codesniffer: For code analysis.
 
-   **Add code linting to the pipeline..**
+   **Add code linting to the pipeline..** [30min]
 
    I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
-   **Set up a local mail server and an S3-like local server for development.**
+   **Set up a local mail server and an S3-like local server for development.** [1hr]
    Setup local mail server.
    - I have used docker compose to setup mailhog.
    ```
