@@ -70,7 +70,7 @@
 
    I have used php_codesniffer to test code quality on CICD pipeline. We can stop build process if code test is below defined threshold.
 
-
+------
 
 # Laravel To-Do List API.
 
