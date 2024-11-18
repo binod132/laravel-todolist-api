@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - hvault  # Trigger on push to 'dev' branch or change this to your branch
+      - main  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
@@ -62,10 +62,11 @@ jobs:
               echo "VAULT_TOKEN=\$VAULT_TOKEN" >> .env.example
             fi
             cat .env.example
-            docker compose down
-            docker compose up --build -d
+            docker compose stop todo-app-1
+            docker rm todo-app-1
+            docker compose up --build -d todo-app-1
             sleep 10
-            docker exec todo-app-1 php artisan migrate
-
-            
+            docker compose stop todo-app-2
+            docker rm todo-app-2
+            docker compose up --build -d todo-app-2
           EOF

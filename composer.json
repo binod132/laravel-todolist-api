@@ -7,6 +7,8 @@
     "require": {
         "php": "^8.2",
         "csharpru/vault-php": "^4.4",
+        "guzzlehttp/guzzle": "^7.9",
+        "laminas/laminas-stdlib": "^3.18.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9"
