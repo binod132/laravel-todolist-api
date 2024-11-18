@@ -3,7 +3,7 @@ name: Deploy Application via Docker Compose
 on:
   push:
     branches:
-      - main  # Trigger on push to 'dev' branch or change this to your branch
+      - hvault  # Trigger on push to 'dev' branch or change this to your branch
 
 jobs:
   deploy:
